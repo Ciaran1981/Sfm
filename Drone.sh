@@ -27,7 +27,7 @@ while getopts "e:m:x:y:u:sz:r:z:d:g:w:p:t:h" opt; do
       echo "	-r RESOL         : Ground resolution (in meters)"
       echo "	-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo "	-d DEQ          : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
-      echo " -g gpu           : Whether to use GPU support -g 1 for use exclude otherwise
+      echo " -g gpu           : Whether to use GPU support -g 1 for use exclude otherwise "
       echo " -w win           : Correl window size"
       echo " -p proc        : no of CPU thread used (needed even when using GPU)"
       echo " -t -CSV        : a txt file or csvwithh coords in mm3d format "
@@ -88,9 +88,9 @@ done
 
 
 if [  -n "${CSV}" ]; then 
-    Orientation.sh -e JPG -u ${UTMZONE} -cal Fraser -sz ${size} -csv ${CSV}
+    Orientation.sh -e JPG -u ${UTMZONE} -c Fraser -sz ${size} -csv ${CSV}
 else
-    Orientation.sh -e JPG -u ${UTMZONE} -cal Fraser -sz ${size}
+    Orientation.sh -e JPG -u ${UTMZONE} -c Fraser -sz ${size}
 fi
 #Correlation into DEM 
  
