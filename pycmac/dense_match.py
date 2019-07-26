@@ -30,7 +30,7 @@ from joblib import Parallel, delayed
 
 
 
-def Malt(folder, proj="30 +north", mode='Ortho', ext="JPG", orientation="Ground_UTM",
+def malt(folder, proj="30 +north", mode='Ortho', ext="JPG", orientation="Ground_UTM",
          DoOrtho='1',  DefCor='0', **kwargs):
     
     """
@@ -122,7 +122,7 @@ def Malt(folder, proj="30 +north", mode='Ortho', ext="JPG", orientation="Ground_
     
     
 #    
-def PIMs(folder, mode='BigMac', ext="JPG", orientation="Ground_UTM",  
+def pims(folder, mode='BigMac', ext="JPG", orientation="Ground_UTM",  
          DefCor='0',  **kwargs):
     """
     
@@ -196,7 +196,7 @@ def PIMs(folder, mode='BigMac', ext="JPG", orientation="Ground_UTM",
         Parallel(n_jobs=-1, verbose=5)(delayed(rmtree)(pish) for pish in pishList)
 #    
 #    
-def PIMs2MNT(folder, proj="30 +north", mode='BigMac',  DoOrtho='1',  **kwargs):
+def pims2mnt(folder, proj="30 +north", mode='BigMac',  DoOrtho='1',  **kwargs):
     """
     
     A function calling the PIMs2MNT command for use in python 
@@ -259,7 +259,7 @@ def PIMs2MNT(folder, proj="30 +north", mode='BigMac',  DoOrtho='1',  **kwargs):
     # georef the DEM
     _set_dataset_config(dsmF, proj, FMT = 'Gtiff')
 
-def Tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
+def tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
 
     """
     
@@ -325,7 +325,82 @@ def Tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
     orthF = (folder, ootFolder, "Orthophotomosaic.tif") 
     
     _set_dataset_config(orthF, proj, FMT = 'Gtiff')
+
+def feather(folder, proj="30 +north", mode='PIMs', ApplyRE="1", **kwargs):
+
+    """
     
+    A function calling the TestLib SeamlineFeathering command for use in python 
+            
+    Notes
+    -----------
+    
+    Purely for convenience within python - not  necessary - the mm3d cmd line
+    is perfectly good
+    
+    see MicMac tools link for further possible args - just put the module cmd as a kwarg
+    The kwargs must be exactly the same case as the mm3d cmd options
+    
+    
+        
+    Parameters
+    -----------
+    
+    folder : string
+           working directory
+           
+    proj : string
+           a proj4/gdal like projection information e.g "ESPG:32360"
+        
+    mode : string
+             Ortho folder use either PIMs or Malt here
+        
+
+    
+       
+    """
+    if mode == 'PIMs':
+        ootFolder = 'PIMs-ORTHO'
+    elif mode == 'Malt':
+        ootFolder = 'Ortho-MEC-Malt'
+    
+    imList = glob(path.join(folder, ootFolder, "*Ort_*.tif"))
+    imList.sort()
+    
+    mlog = open(path.join(folder, 'SeamLog.txt'), "w")  
+    
+    subList = [path.split(item)[1] for item in imList]
+    
+    subStr = str(subList)
+    
+    sub2 = subStr.replace("[", "")
+    sub2 = sub2.replace("]", "")
+    sub2 = sub2.replace("'", "") 
+    sub2 = sub2.replace(", ", "|")      
+    
+    chdir(path.join(folder, ootFolder))   
+    
+    cmd = ["mm3d", "TestLib", "SeamlineFeathering", '"'+sub2+'"',
+           "ApplyRE="+ApplyRE,  "Out=SeamMosaic.tif"]
+    
+    if kwargs != None:
+        for k in kwargs.items():
+            oot = re.findall(r'\w+',str(k))
+            anArg = oot[0]+'='+oot[1]
+            cmd.append(anArg)      
+    
+
+    
+    ret = call(cmd, stdout=mlog)
+
+    if ret !=0:
+        print('A micmac error has occured - check the log file')
+        sys.exit()
+    
+    orthF = path.join(folder, ootFolder, "SeamMosaic.tif")
+    _set_dataset_config(path.abspath(orthF), proj, FMT = 'Gtiff')
+    
+    chdir(folder)
 
         
 def _set_dataset_config(inRas, projection, FMT = 'Gtiff'):
