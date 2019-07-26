@@ -113,7 +113,7 @@ else
  
 if [ -n "${tile}" ]; then
     
-    if [ "$gpu_set" = true ]; then
+    if [ -n "$gpu_set" ]; then
     
         # The only thing I wonder here is whether it is worth building the whole 'master'
          # PIMs folder and simply moving the Ortho part for later (this still involves
@@ -206,8 +206,9 @@ else
     cp PIMs-TmpBasc/PIMs-Merged_Correl.tfw OUTPUT/Correl.tfw
     cp PIMs-TmpBasc/PIMs-Merged_Correl.tif OUTPUT/Correl.tif
     
-    gdal_edit.py -a_srs "+proj=utm +zone=${UTM}  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" DSM.tif
-    gdal_edit.py -a_srs "+proj=utm +zone=${UTM}  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" Mask.tif
+    gdal_edit.py -a_srs "+proj=utm +zone=${UTM}  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/DSM.tif
+    gdal_edit.py -a_srs "+proj=utm +zone=${UTM}  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/Mask.tif
+    gdal_edit.py -a_srs "+proj=utm +zone=${UTM}  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/Correl.tif
    
     #for f in TawnyBatch/**Orthophotomosaic*.tif; do     
     gdal_edit.py -a_srs "+proj=utm +zone=$UTM +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/OrthFinal.tif
