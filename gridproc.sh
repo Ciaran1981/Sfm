@@ -114,7 +114,7 @@ else
 fi
 
  
-orthomosaic.sh -f $PWD -u ${UTM} -mt ossimFeatherMosaic
+orthomosaic.sh -f $PWD -u ${UTM} -mb 1 -mt ossimFeatherMosaic
 
 dsmmosaic.sh -f $PWD -u ${UTM} -mt ossimMaxMosaic
 

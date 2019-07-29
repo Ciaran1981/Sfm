@@ -12,14 +12,14 @@ OUT=BigMosaic.tif
 
 
  
-while getopts "f:u:mt:o:h" opt; do  
+while getopts "f:u:mb:pb:mt:o:h" opt; do  
   case $opt in
     h)
       echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
       echo "orthomosaic.sh -f $PWD -u '30 +north' -mt ossimFeatherMosaic -o outmosaic.tif"
-      echo "	-f FOLDER     : MicMac working directory."
+      echo "	-f FOLDER     : MicMac working directory or Malt/PIMs ortho dir."
       echo "	-u UTMZONE       : UTM Zone of area of interest"
-      echo "    -mb MBATCH : whether to us maltbatch (bool)"
+      echo "    -mb MBATCH : whether to us maltbatch (bool) "
       echo "    -pb PBATCH : whether to us pimsbatch (bool)"      
       echo " -mt MTYPE        : OSSIM mosaicing type e.g. ossimBlendMosaic ossimMaxMosaic ossimImageMosaic ossimClosestToCenterCombiner ossimBandMergeSource ossimFeatherMosaic" 
       echo "	-o OUT       : Output mosaic e.g. mosaic.tif"      
