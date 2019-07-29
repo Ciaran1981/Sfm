@@ -13,22 +13,17 @@
 
 
  
-while getopts "e:m:x:y:u:sz:r:z:d:g:w:p:t:h" opt; do  
+while getopts "e:u:s:z:d:g:p:t:h" opt; do  
   case ${opt} in
     h)
       echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
-      echo "usage: Drone.sh -e JPG -x 55000 -y 6600000 -u \"32 +north\" -p true -r 0.05"
+      echo "usage: Drone.sh -e JPG -u "30 +north" -p 16 
       echo "	-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
-      echo "	-m match         : exaustive matching" 
-      echo "	-x X_OFF         : X (easting) offset for ply file overflow issue (default=0)."
-      echo "	-y Y_OFF         : Y (northing) offset for ply file overflow issue (default=0)."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "	-s size         : resize of imagery eg - 2000"
-      echo "	-r RESOL         : Ground resolution (in meters)"
       echo "	-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo "	-d DEQ          : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
       echo " -g gpu           : Whether to use GPU support -g 1 for use exclude otherwise "
-      echo " -w win           : Correl window size"
       echo " -p proc        : no of CPU thread used (needed even when using GPU)"
       echo " -t -CSV        : a txt file or csvwithh coords in mm3d format "
       echo "	-h	             : displays this message and exits."
@@ -43,16 +38,7 @@ while getopts "e:m:x:y:u:sz:r:z:d:g:w:p:t:h" opt; do
       ;;
  	s)
       size=${OPTARG}
-      ;;        
-	r) 
-      RESOL=${OPTARG}
-      ;;  
-	x)
-      X_OFF=${OPTARG}
-      ;;	
-	y)
-      Y_OFF=${OPTARG}
-      ;;	
+      ;;         
 	z)
       ZoomF=${OPTARG}
       ;;
@@ -62,10 +48,7 @@ while getopts "e:m:x:y:u:sz:r:z:d:g:w:p:t:h" opt; do
 	g)
       gpu=${OPTARG}
       ;;
-	w)
-      win=${OPTARG}
-      ;;
-	prc)
+	p)
       proc=${OPTARG}  
       ;; 
     t)
@@ -97,13 +80,14 @@ fi
 if [ -n "${gpu}" = true ]; then 
     	/home/ciaran/MicMacGPU/micmac/bin/mm3d Malt UrbanMNE ".*.${EXTENSION}" Ground_UTM UseGpu=1 EZA=1 DoOrtho=1 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
 else
-	mm3d Malt UrbanMNE ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
+	mm3d Malt Ortho ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
 fi
 
-
-mm3d Tawny Ortho-MEC-Malt RadiomEgal=1 
-
-
+if [ -n "${DEQ}" ]; then 
+    mm3d Tawny Ortho-MEC-Malt RadiomEgal=1 
+else
+    mm3d Tawny Ortho-MEC-Malt RadiomEgal=1 
+fi
 
 #Making OUTPUT folder
 mkdir OUTPUT

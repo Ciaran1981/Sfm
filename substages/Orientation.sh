@@ -11,7 +11,7 @@
 
 
 
-while getopts ":e:u:i:c:t:s:h:" o; do  
+while getopts ":e:u:i:c:t:s:sz:h:" o; do  
   case ${o} in
     h)
       echo "Carry out feature extraction and orientation of images"
@@ -43,7 +43,10 @@ while getopts ":e:u:i:c:t:s:h:" o; do
       ;; 
     s)
       SUB=${OPTARG}
-      ;;            
+      ;;
+    sz)
+      SUB=${SIZE}
+      ;;                    
     \?)
       echo "Orientation.sh: Invalid option: -${OPTARG}" >&1
       exit 1
