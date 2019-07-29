@@ -15,7 +15,7 @@ while getopts ":e:u:i:c:t:s:sz:h:" o; do
   case ${o} in
     h)
       echo "Carry out feature extraction and orientation of images"
-      echo "Usage: Orientation.sh -e JPG -u 30 +north -sub sub.csv " 
+      echo "Usage: Orientation.sh -e JPG -u -c Fraser 30 +north -sub sub.csv " 
       echo "	-e {EXTENSION}     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "	-s SIZE         : resize of imagery eg - 2000"
