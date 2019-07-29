@@ -86,7 +86,7 @@ fi
 if [ -n "${DEQ}" ]; then 
     mm3d Tawny Ortho-MEC-Malt RadiomEgal=1 
 else
-    mm3d Tawny Ortho-MEC-Malt RadiomEgal=1 
+    mm3d Tawny Ortho-MEC-Malt RadiomEgal=0 
 fi
 
 #Making OUTPUT folder
