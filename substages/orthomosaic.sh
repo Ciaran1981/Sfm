@@ -93,8 +93,8 @@ if [ -n "${PBATCH}" ]; then
     echo "creating final mosaic"
     ossim-orthoigen --combiner-type $MTYPE  $FOLDER/MaltBatch/*tile*/*Ortho-tile*/*Orthophotomosaic.tif $OUT
 else
-    for f in $FOLDER/*Ort_*tif; do
-        mm3d ConvertIm "$f"; done
+    #for f in $FOLDER/*Ort_*tif; do
+       # mm3d ConvertIm "$f"; done
         
     for f in $FOLDER/*Ort_*tif; do
         gdal_edit.py -a_srs "+proj=utm +zone=$UTM  +ellps=WGS84 +datum=WGS84 +units=m +no_defs" "$f"; done

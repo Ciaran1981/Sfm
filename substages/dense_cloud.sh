@@ -15,10 +15,10 @@ while getopts ":e:a:m:u:z:d:r:o:h:" o; do
   case ${o} in
     h) 
       echo "Process dense cloud."
-      echo "Usage: dense_cloud.sh -e JPG -a Forest -z 4 -r 0.02"
+      echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -z 4 -r 0.02"
       echo "-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "-a Algorithm     : type of algo eg BigMac, MicMac, Forest, Statue etc"
-      echo "-a Algorithm     : type of algo eg BigMac, MicMac, Forest, Statue etc"
+      echo "-m MODE          : Either Malt or PIMs - mandatory"
       echo "-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo "-d DEQ           : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
