@@ -12,7 +12,7 @@
 # add default values
 
 
-while getopts "e:a:m:s:d:z:h" opt; do
+while getopts "e:a:m:d:z:h" opt; do
   case $opt in
     h)
       echo "Run workflow for point cloud from culture 3d algo."
@@ -22,7 +22,6 @@ while getopts "e:a:m:s:d:z:h" opt; do
       echo "	-m match       : matching type - eg Line All etc" 
       echo "	-csv CSV       : Whether to use a csv file."
       echo "	-u UTM         : UTM zone."
-      echo "	-s             : Do not use 'Schnaps' optimised homologous points (does by default)."
       echo "	-z ZOOM        : Zoom Level (default=2)"
       echo "	-h	  : displays this message and exits."
       echo " "

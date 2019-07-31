@@ -5,10 +5,7 @@
 
 
 # add default values
-FOLDER=$PWD  
-MTYPE=ossimFeatherMosaic
-utm_set=false
-OUT=BigMosaic.tif
+
 
 
  
