@@ -78,9 +78,9 @@ fi
 #Correlation into DEM 
  
 if [ -n "${gpu}" = true ]; then 
-    	/home/ciaran/MicMacGPU/micmac/bin/mm3d Malt UrbanMNE ".*.${EXTENSION}" Ground_UTM UseGpu=1 EZA=1 DoOrtho=1 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
+    	/home/ciaran/MicMacGPU/micmac/bin/mm3d Malt UrbanMNE ".*.${EXTENSION}" Ground_UTM UseGpu=1 EZA=1 DoOrtho=1 DefCor=0 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
 else
-	mm3d Malt Ortho ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
+	mm3d Malt Ortho ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 SzW=${win} ZoomF=${ZoomF} NbProc=${proc}
 fi
 
 if [ -n "${DEQ}" ]; then 
