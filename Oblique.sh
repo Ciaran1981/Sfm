@@ -39,9 +39,6 @@ while getopts "e:a:m:d:z:h" opt; do
 	z)
       ZOOM=$OPTARG
       ;;
-	s)
-      use_Schnaps=true
-      ;; 
 	d)
       dist=$OPTARG
       ;; 
