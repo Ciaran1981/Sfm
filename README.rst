@@ -170,8 +170,7 @@ All are internal to the complete workflows.
 
 **dense_cloud.sh**
 
-- Processes dense cloud using the PIMs-based algorithms, ortho-mosaic, point-cloud and georefs everything
-
+- Processes dense cloud using either the PIMs or Malt-based algorithms, ortho-mosaic, point-cloud and georefs everything
 
 **MaltBatch.py**
 
@@ -184,6 +183,10 @@ All are internal to the complete workflows.
 - This processes data in tiles/chunks using the PIMs algorithm
 
 - this script is an internal option in DronePIMs.sh
+
+**orthomosaic.sh**
+
+- Orthomosaic the output of any of the above including the batch scripts
 
 **MntBatch.py**
 
