@@ -19,7 +19,7 @@ while getopts "e:a:m:s:d:z:h" opt; do
       echo "usage: Oblique.sh -e JPG -a Statue -d 10 -z 2"
       echo "	-e EXTENSION   : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-a Algorithm   : type of algo eg BigMac, MicMac, Forest, Statue etc."
-      echo "	-m match       : exaustive matching" 
+      echo "	-m match       : matching type - eg Line All etc" 
       echo "	-csv CSV       : Whether to use a csv file."
       echo "	-u UTM         : UTM zone."
       echo "	-s             : Do not use 'Schnaps' optimised homologous points (does by default)."
@@ -61,8 +61,8 @@ done
 
 # If the camera positions are all over the shop its better to use the ALL option
 if [  -n "$match" ]; then
-    echo "exaustive matching"
-    mm3d Tapioca All .*$EXTENSION -1 @SFS
+    echo "Matching type specified"
+    mm3d Tapioca $match .*$EXTENSION -1 @SFS
 else
     mm3d Tapioca File FileImagesNeighbour.xml -1 @SFS
 fi
