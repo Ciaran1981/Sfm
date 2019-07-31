@@ -18,12 +18,12 @@ while getopts "f:u:mb:pb:mt:o:h" opt; do
       echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
       echo "orthomosaic.sh -f $PWD -u '30 +north' -mt ossimFeatherMosaic -o outmosaic.tif"
       echo "	-f FOLDER     : MicMac working directory or Malt/PIMs ortho dir."
-      echo "	-u UTMZONE       : UTM Zone of area of interest"
-      echo "    -mb MBATCH : whether to us maltbatch (bool) "
-      echo "    -pb PBATCH : whether to us pimsbatch (bool)"      
-      echo " -mt MTYPE        : OSSIM mosaicing type e.g. ossimBlendMosaic ossimMaxMosaic ossimImageMosaic ossimClosestToCenterCombiner ossimBandMergeSource ossimFeatherMosaic" 
-      echo "	-o OUT       : Output mosaic e.g. mosaic.tif"      
-      echo "	-h	             : displays this message and exits."
+      echo "	-u UTMZONE    : UTM Zone of area of interest"
+      echo "    -mb MBATCH    : whether to us maltbatch (bool) "
+      echo "    -pb PBATCH    : whether to us pimsbatch (bool)"      
+      echo "    -mt MTYPE     : OSSIM mosaicing type e.g. ossimBlendMosaic ossimMaxMosaic ossimImageMosaic ossimClosestToCenterCombiner ossimBandMergeSource ossimFeatherMosaic" 
+      echo "	-o OUT        : Output mosaic e.g. mosaic.tif"      
+      echo "	-h	          : displays this message and exits."
       
       echo " " 
       exit 0

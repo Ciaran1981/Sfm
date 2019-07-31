@@ -17,7 +17,7 @@
 
 
 # example:
-# ./gridproc.sh -e JPG -u "30 +north" -x 6,6 -w 2 -gpu 1 -b 6
+# ./gridproc.sh -e JPG -u "30 +north" -x 6,6 -w 2 -g 1 -b 6
 
 
  
@@ -30,17 +30,17 @@ while getopts ":e:u:s:r:z:e:x:g:b:w:p:t:h" opt; do
     h)
       echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
       echo "gridproc.sh -e JPG -u '30 +north' -x 6 -w 2 -p 4 -b 4"
-      echo "	-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
-      echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
-      echo "	-s size         : resize of imagery eg - 2000"
-      echo "	-r RESOL         : Ground resolution (in meters)"
-      echo "	-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
+      echo " -e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
+      echo " -u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
+      echo " -s size          : resize of imagery eg - 2000"
+      echo " -r RESOL         : Ground resolution (in meters)"
+      echo " -z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo " -x grd           : Grid dimensions x and y - eg 3,3"
-      echo " -g gp          : GPU support 1 for use"
+      echo " -g gp            : GPU support 1 for use"
       echo " -b batch         : no of jobs at any one time"
       echo " -w win           : Correl window size"
-      echo " -t CSV         : a txt or csv file of gnsss etc - default none - something if needed"
-      echo "	-h	             : displays this message and exits."
+      echo " -t CSV           : a txt or csv file of gnsss etc - default none - something if needed"
+      echo "	-h	          : displays this message and exits."
       echo " " 
       exit 0
       ;;    

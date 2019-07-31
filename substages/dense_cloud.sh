@@ -22,9 +22,9 @@ while getopts ":e:a:m:u:z:d:r:o:h:" o; do
       echo "-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo "-d DEQ           : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
-      echo " -r              : zreg term - context dependent "     
-      echo " -o              : do ortho -True or False "           
-      echo " -h	             : displays this message and exits."
+      echo "-r               : zreg term - context dependent "     
+      echo "-o               : do ortho -True or False "           
+      echo "-h	             : displays this message and exits."
       echo " "
       exit 0 
       ;;    

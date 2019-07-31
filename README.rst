@@ -202,7 +202,7 @@ Hence, this tiles the ortho generation, assuming you have already globbaly proce
 - Outputs can be either single-band or stacked depending on preference
 
 
-MStack.py
+**MStack.py**
 
 - This uses functionality borrowed from my lib geospatial_learn to stack the 3-band results of processing Micasense red-edge imagery. 
 - As MicMac only supports 3-band images, the most efficient solution I currently have is to dense match RGB and RReNir sperately then merge results (more efficient solution to follow!)

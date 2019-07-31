@@ -20,8 +20,8 @@ while getopts ":e:u:i:c:t:s:sz:h:" o; do
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "	-s SIZE         : resize of imagery eg - 2000"
       echo "	-c CALIB        : Camera calibration model - e.g. RadialBasic, Fraser etc"
-      echo "-t -CSV        : text file usually csv with mm3d formatting"
-      echo "-s -SUB        : a subset  csv for pre-calibration of orientation"      
+      echo "    -t CSV        : text file usually csv with mm3d formatting"
+      echo "    -s SUB        : a subset  csv for pre-calibration of orientation"      
       echo "	-h	             : displays this message and exits."
       echo " "  
       exit 0

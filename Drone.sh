@@ -20,12 +20,12 @@ while getopts "e:u:s:z:d:g:p:t:h" opt; do
       echo "usage: Drone.sh -e JPG -u "30 +north" -p 16 
       echo "	-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
-      echo "	-s size         : resize of imagery eg - 2000"
+      echo "	-s size          : resize of imagery eg - 2000"
       echo "	-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
-      echo "	-d DEQ          : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
-      echo " -g gpu           : Whether to use GPU support -g 1 for use exclude otherwise "
-      echo " -p proc        : no of CPU thread used (needed even when using GPU)"
-      echo " -t -CSV        : a txt file or csvwithh coords in mm3d format "
+      echo "	-d DEQ           : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
+      echo "    -g gpu           : Whether to use GPU support -g 1 for use exclude otherwise "
+      echo "    -p proc          : no of CPU thread used (needed even when using GPU)"
+      echo "    -t -CSV          : a txt file or csvwithh coords in mm3d format "
       echo "	-h	             : displays this message and exits."
       echo " "  
       exit 0
