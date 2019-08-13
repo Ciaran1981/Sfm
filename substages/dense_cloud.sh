@@ -91,7 +91,7 @@ if [[ "$MODE" = "PIMs" ]]; then
     
     mask_dsm.py -folder $PWD -pims 1
     
-    mm3d GrShade PIMs-TmpBasc/PIMs-Merged_Prof.tif ModeOmbre=IgnE Out=/OUTPUT/Shade.tif
+    mm3d GrShade PIMs-TmpBasc/PIMs-Merged_Prof.tif ModeOmbre=IgnE Out=OUTPUT/Shade.tif
     
     
     cp PIMs-TmpBasc/PIMs-Merged_Prof.tfw OUTPUT/DSM.tfw

@@ -12,7 +12,7 @@
 while getopts "f:u:mb:pb:mt:o:h" opt; do  
   case $opt in
     h)
-      echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
+      echo "Run an ossim-based ortho-mosaic on micmac derived imagery"
       echo "orthomosaic.sh -f $PWD -u '30 +north' -mt ossimFeatherMosaic -o outmosaic.tif"
       echo "	-f FOLDER     : MicMac working directory or Malt/PIMs ortho dir."
       echo "	-u UTMZONE    : UTM Zone of area of interest"
