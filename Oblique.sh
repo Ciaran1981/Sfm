@@ -16,7 +16,7 @@ while getopts "e:a:m:d:z:h" opt; do
   case $opt in
     h)
       echo "Run workflow for point cloud from culture 3d algo."
-      echo "usage: Oblique.sh -e JPG -a Statue -d 10 -z 2"
+      echo "usage: Oblique.sh -e JPG -a Statue -m All -z 2"
       echo "	-e EXTENSION   : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-a Algorithm   : type of algo eg BigMac, MicMac, Forest, Statue etc."
       echo "	-m match       : matching type - eg Line All etc" 
