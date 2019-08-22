@@ -23,9 +23,9 @@ from shutil import copy
 from subprocess import call
 import gdal
 from tqdm import tqdm
+import ogr
 
-
-
+from sklearn import metrics
 
 
 def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
@@ -423,4 +423,94 @@ def mask_raster_multi(inputIm,  mval=1, outval = None, mask=None,
            
         inDataset.FlushCache()
         inDataset = None
+ 
+def num_subset(inFolder, outFolder, num=5, ext="JPG"):
+    
+    """ 
+    Pick a subset of images from a video such as every fifth image (frame)
+    
+    
+    Parameters 
+    ----------- 
+    
+    inFolder : string
+              the input raster 
         
+    outFolder : string
+           the masking value that delineates pixels to be kept
+        
+    num : int 
+              the subdivision - e.g. every fifth image
+
+    ext : string
+                 image extention e.g JPG, tif
+        
+
+    """
+    # ffmpeg cmd just in case I end up[ doing anything like this]
+    # ffmpeg -i *.mp4 Im_0000_%5d_Ok.png
+    
+    fileList = glob2.glob(os.path.join(inFolder, "*."+ext))
+        
+    
+    
+#    files = [os.path.split(file)[1] for file in fileList]
+#    files.sort()
+    
+    ootList = []
+    
+    for f in range(0, len(fileList), num):
+        ootList.append(fileList[f])
+        
+        
+    
+    Parallel(n_jobs=-1,verbose=5)(delayed(copy)(fl, 
+            outFolder) for fl in ootList)
+
+
+def rmse_vector_lyr(inShape, attributes):
+
+    """ 
+    Using sklearn get the rmse of 2 vector attributes 
+    (the actual and predicted of course in the order ['actual', 'pred'])
+    
+    
+    Parameters 
+    ----------- 
+    
+    inShape : string
+              the input vector of OGR type
+        
+    attributes : list
+           a list of strings denoting the attributes
+         
+
+    """    
+    
+    #open the layer etc
+    shp = ogr.Open(inShape)
+    lyr = shp.GetLayer()
+    labels = np.arange(lyr.GetFeatureCount())
+    
+    # empty arrays for att
+    pred = np.zeros((1, lyr.GetFeatureCount()))
+    true = np.zeros((1, lyr.GetFeatureCount()))
+    
+    for label in labels: 
+        feat = lyr.GetFeature(label)
+        true[:,label] = feat.GetField(attributes[0])
+        pred[:,label] = feat.GetField(attributes[1])
+    
+    
+    
+    error = np.sqrt(metrics.mean_squared_error(true, pred))
+    
+    return error
+    
+        
+    
+    
+
+
+
+       
