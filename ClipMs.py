@@ -21,8 +21,9 @@ from subprocess import call
 from joblib import Parallel, delayed
 from shutil import rmtree
 from skimage.io import imread#, imsave
-from skimage.util import crop
-from scipy.misc import bytescale
+from skimage.util import crop, img_as_ubyte
+from skimage .exposure import rescale_intensity
+
 import imageio
 
 parser = argparse.ArgumentParser()
@@ -34,7 +35,10 @@ parser.add_argument("-o", "--oot", type=str, required=True,
                      help="path to folder for cropped images")
 
 parser.add_argument("-nt", "--noT", type=int, required=False, default=-1,
-                    help="no of tiles at a time")
+                    help="no of threads at a time")
+
+parser.add_argument("-cr", "--crp", type=int, required=False, default=120,
+                    help="crop ")
 
 args = parser.parse_args() 
 
@@ -52,8 +56,9 @@ def clipper(i, outFolder):
 #for i in imList:
     hd, tl = path.split(i)
     im = imread(i)
-    cropped = crop(im, ((120, 0), (0, 0), (0,0)), copy=False)
-    img8 = bytescale(cropped)
+    cropped = crop(im, ((crop, 0), (0, 0), (0, 0)), copy=False)
+    imgre = rescale_intensity(cropped)
+    img8 = img_as_ubyte(imgre)
 
 #    cropped =im.crop((120, 0, 1227, 909))
     outFile = path.join(outFolder, tl)
@@ -68,7 +73,7 @@ def clipper(i, outFolder):
 if args.noT == 1:
     [clipper(img, outFolder) for img in imList]
 else:
-    Parallel(n_jobs=args.noT, verbose=2)(delayed(clipper)(img, 
+    Parallel(n_jobs=int(args.noT), verbose=2)(delayed(clipper)(img, 
             outFolder) for img in imList)    
 
 # load exif data

@@ -31,10 +31,10 @@ import micasense.imageset as imageset
 from glob2 import glob
 import imageio
 import argparse
-from scipy.misc import bytescale
 import cv2
 #from tqdm import tqdm
-from subprocess import call, check_call
+from skimage import exposure, util
+from subprocess import call#, check_call
 from joblib import Parallel, delayed
 import gdal#, gdal_array
 
@@ -201,7 +201,9 @@ def align_template(imAl, mx, reflFolder, ref_ind=rf):
     names = [os.path.join(reflFolder, pv) for pv in nmList]
     
     for ind, p in enumerate(prevList):
-        img8 = bytescale(p)
+        #img8 = bytescale(p)
+        imgre = exposure.rescale_intensity(p)
+        img8 = util.img_as_ubyte(imgre)
         imageio.imwrite(names[ind], img8)
     
     return warp_matrices, alignment_pairs#, dist_coeffs, cam_mats, cropped_dimensions
@@ -282,8 +284,9 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
     
     for ind, k in enumerate(bndFolders):
          
-         img8 = bytescale(imoot[ind])
-         
+         #img8 = bytescale(imoot[ind])
+         imgre = exposure.rescale_intensity(imoot[ind])
+         img8 = util.img_as_ubyte(imgre)
          outfile = os.path.join(k, nm+imtags[ind])
          
          imageio.imwrite(outfile, img8)
@@ -375,18 +378,18 @@ if args.stack != None:
         [proc_stack(imCap ,warp_matrices,
                     panel_irradiance) for imCap in imgset.captures]
         
-    elif args.stack == 3:
-        print("Producing pairs of 3-band composites")
-        #prep the dir
-        bndNames = ['RGB', 'RRENir']
-        bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
-        [os.mkdir(bf) for bf in bndFolders]
-        
-        Parallel(n_jobs=args.noT,
-                 verbose=2)(delayed(proc_imgs_comp)(imCap, warp_matrices,
-                           bndFolders,
-                           panel_irradiance) for imCap in imgset.captures)
-        
+#    elif args.stack == 3:
+#        print("Producing pairs of 3-band composites")
+#        #prep the dir
+#        bndNames = ['RGB', 'RRENir']
+#        bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
+#        [os.mkdir(bf) for bf in bndFolders]
+#        
+#        Parallel(n_jobs=args.noT,
+#                 verbose=2)(delayed(proc_imgs_comp)(imCap, warp_matrices,
+#                           bndFolders,
+#                           panel_irradiance) for imCap in imgset.captures)
+#        
 
 else:
     print("Producing single band images")

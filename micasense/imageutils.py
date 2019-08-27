@@ -153,7 +153,7 @@ def align(pair):
                 print("Starting warp for level {} is:\n {}".format(level,warp_matrix))
 
             cc, warp_matrix = cv2.findTransformECC(grad1, grad2,
-                                            warp_matrix, warp_mode, criteria)
+                                            warp_matrix, warp_mode, criteria, inputMask=None, gaussFiltSize=1)
 
             if show_debug_images:
                 print("Warp after alignment level {} is \n{}".format(level,warp_matrix))
