@@ -46,6 +46,10 @@ imList = glob(path.join(path.abspath(args.inF), '*.tif'))
 
 outFolder = args.oot
 
+thrd = args.noT
+
+cropp = args.crp
+
 if path.exists(outFolder):
     rmtree(outFolder)
 
@@ -56,7 +60,7 @@ def clipper(i, outFolder):
 #for i in imList:
     hd, tl = path.split(i)
     im = imread(i)
-    cropped = crop(im, ((crop, 0), (0, 0), (0, 0)), copy=False)
+    cropped = crop(im, ((cropp, 0), (0, 0), (0, 0)), copy=False)
     imgre = rescale_intensity(cropped)
     img8 = img_as_ubyte(imgre)
 
@@ -70,10 +74,10 @@ def clipper(i, outFolder):
            "-overwrite_original"]
     call(cmd)
 
-if args.noT == 1:
+if thrd == 1:
     [clipper(img, outFolder) for img in imList]
 else:
-    Parallel(n_jobs=int(args.noT), verbose=2)(delayed(clipper)(img, 
+    Parallel(n_jobs=thrd, verbose=2)(delayed(clipper)(img, 
             outFolder) for img in imList)    
 
 # load exif data
