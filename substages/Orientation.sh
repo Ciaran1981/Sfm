@@ -110,7 +110,7 @@ mm3d Schnaps .*${EXTENSION} MoveBadImgs=1
 
 if [  -n "${SUB}" ]; then
     echo "using calibration subset"
-    calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION}
+    calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION} -d ,
 else
     mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary SH=_mini | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
