@@ -11,7 +11,7 @@
 
 
 
-while getopts ":e:a:m:u:z:d:r:o:h:" o; do
+while getopts ":e:a:m:u:z:d:n:r:o:h:" o; do
   case ${o} in
     h) 
       echo "Process dense cloud."
@@ -22,6 +22,7 @@ while getopts ":e:a:m:u:z:d:r:o:h:" o; do
       echo "-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
       echo "-d DEQ           : Degree of equalisation between images during mosaicing (See mm3d Tawny)"
+      echo "-n CORE          : Number of cores to use - likely best to stick with physical ones"
       echo "-r               : zreg term - context dependent "     
       echo "-o               : do ortho -True or False "           
       echo "-h	             : displays this message and exits."
@@ -45,7 +46,10 @@ while getopts ":e:a:m:u:z:d:r:o:h:" o; do
       ;;
 	d)
       DEQ=${OPTARG}  
-      ;; 
+      ;;
+	n)
+      CORE=${OPTARG}  
+      ;;  
     r)
       zreg=${OPTARG}
       ;;
@@ -107,15 +111,19 @@ if [[ "$MODE" = "PIMs" ]]; then
     
 else
     echo "Using Malt Algorithm"
+    # Here we find the physical CPU count to avoid thread errors in cmake
+    CpuCount=($(lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l))
+    
     if  [ -n "${orth}" ]; then
-    	mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=32
+    	mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=$CpuCount
     else
-        mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=32
+        mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=$CpuCount
     
         mm3d Tawny Ortho-MEC-Malt RadiomEgal=0 
         mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
     fi
     
+     
 
     #PointCloud from Ortho+DEM, with offset substracted to the coordinates to solve the 32bit precision issue
     mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml  Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
