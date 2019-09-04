@@ -25,7 +25,7 @@ which are hopefully recovered in the single thread clean-up at the end.
 
 Usage: 
     
-MaltBatch.py -folder $PWD -algo UrbanMNE -num 3,3 -zr 0.01 -g 1 -nt 3 -bbox False
+MaltBatch.py -folder $PWD -algo UrbanMNE -num 2,1 -zr 0.01 -nt 2 -g 0 -bbox False
 
 Here we are are using the UrbaMNE algorithm on a 3x3 grid of tiles, using the gpu,
 processing 3 tiles in parallel
@@ -183,7 +183,7 @@ finalList = list(zip(txtList, nameList))
 #rejectListB = []
 
 # May revert to another way but lets see.....
-def proc_malt(subList, subName, bFolder, gP='1', window='2', bbox=True):
+def proc_malt(subList, subName, bFolder, gP, window='2', bbox=True):
     # Yes all this string mucking about is not great but it is better than 
     # dealing with horrific xml, when the info is so simple
     tLog = path.join(bFolder, "TawnyLogs")
@@ -244,11 +244,11 @@ def proc_malt(subList, subName, bFolder, gP='1', window='2', bbox=True):
 
 if args.mx is None:
     todoList = Parallel(n_jobs=mp,verbose=5)(delayed(proc_malt)(i[0], 
-         i[1], bFolder, window='2', bbox=args.bb) for i in finalList) 
+         i[1], bFolder, gP, window='2', bbox=args.bb) for i in finalList) 
 else:
     subFinal = finalList[0:args.mx]
     todoList = Parallel(n_jobs=mp,verbose=5)(delayed(proc_malt)(i[0], 
-             i[1], bFolder, window='2', bbox=args.bb) for i in subFinal) 
+             i[1], bFolder, gP, window='2', bbox=args.bb) for i in subFinal) 
 
 
 # This is here so we have some account of anything missed due to thread/gpu mem overload issues
