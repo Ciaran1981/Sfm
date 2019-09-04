@@ -73,7 +73,7 @@ mkdir OUTPUT
 
 if [[ "$MODE" = "PIMs" ]]; then
     echo "Using PIMs Algorithm"
-    mm3d PIMs $Algorithm .*${EXTENSION} Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg SH=_mini  
+    mm3d PIMs $Algorithm .*${EXTENSION} Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg  
     
     
     if  [ -n "${orth}" ]; then
@@ -115,9 +115,9 @@ else
     CpuCount=($(lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l))
     
     if  [ -n "${orth}" ]; then
-    	mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=$CpuCount
+    	mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
     else
-        mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 NbProc=$CpuCount
+        mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
     
         mm3d Tawny Ortho-MEC-Malt RadiomEgal=0 
         mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]

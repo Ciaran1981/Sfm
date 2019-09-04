@@ -121,10 +121,22 @@ fi
 
 mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini
 
-
-#Transform to  RTL system
-mm3d CenterBascule .*${EXTENSION} Arbitrary RAWGNSS_N Ground_Init_RTL
-
+# This is worth doing to get rid of spurious points on fringes and below the assumed plain
+if [ -n "${MASK}" ]; then
+    echo "masking initial orientation"
+    mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini WithCam=0 Out=NoCams.ply
+    mm3d SaisieMasqQT NoCams.ply
+    read -rsp $'Once mask is saved press any key to continue...\n' -n1 key
+    mm3d HomolFilterMasq .*${EXTENSION}  OriMasq3D=Ori-Arbitrary/ Masq3D=NoCams.ply
+    # rename homologous points, the filtered one will be seen as the default
+    mv Homol HomolInit
+    mv HomolMasqFiltered/ Homol
+    mm3d Tapas ${CALIB} .*${EXTENSION} InOri=Ori-Arbitrary/ Out=ArbitraryM
+    mm3d CenterBascule .*${EXTENSION} ArbitraryM RAWGNSS_N Ground_Init_RTL
+else
+    #Transform to  RTL system
+    mm3d CenterBascule .*${EXTENSION} Arbitrary RAWGNSS_N Ground_Init_RTL
+fi
 
 #Visualize Ground_RTL orientation
 mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL SH=_mini
@@ -133,11 +145,11 @@ mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL SH=_mini
  
 #Change system to final cartographic system  
 if [  -n "${CSV}" ]; then 
-    mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_UTM EmGPS=[RAWGNSS_N,1] AllFree=1 SH=_mini | tee ${CALIB}GnssBundle.txt
+    mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_UTM EmGPS=[RAWGNSS_N,1] AllFree=1  | tee ${CALIB}GnssBundle.txt
     # For reasons unknown this screws it up from csv
     #mm3d ChgSysCo  .*${EXTENSION} Ground_RTL SysCoRTL.xml@SysUTM.xml Ground_UTM
 else
-    mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_RTL EmGPS=[RAWGNSS_N,1] AllFree=1 SH=_mini | tee ${CALIB}GnssBundle.txt
+    mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_RTL EmGPS=[RAWGNSS_N,1] AllFree=1 | tee ${CALIB}GnssBundle.txt
     mm3d ChgSysCo  .*${EXTENSION} Ground_RTL RTLFromExif.xml@SysUTM.xml Ground_UTM
     mm3d OriExport Ori-Ground_UTM/.*xml CameraPositionsUTM.txt AddF=1
 fi
