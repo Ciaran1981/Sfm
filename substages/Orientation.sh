@@ -135,12 +135,12 @@ if [ -n "${MASK}" ]; then
     # rename homologous points, the filtered one will be seen as the default
     mv Homol HomolInit
     mv HomolMasqFiltered/ Homol
-    mm3d Tapas ${CALIB} .*${EXTENSION} InOri=Ori-Arbitrary/ Out=ArbitraryM
-    mm3d CenterBascule .*${EXTENSION} ArbitraryM RAWGNSS_N Ground_Init_RTL
-else
+    #mm3d Tapas ${CALIB} .*${EXTENSION} InOri=Ori-Arbitrary/ Out=ArbitraryM
+    #mm3d CenterBascule .*${EXTENSION} ArbitraryM RAWGNSS_N Ground_Init_RTL
+#else
     #Transform to  RTL system
-    mm3d CenterBascule .*${EXTENSION} Arbitrary RAWGNSS_N Ground_Init_RTL
-fi
+mm3d CenterBascule .*${EXTENSION} Arbitrary RAWGNSS_N Ground_Init_RTL
+#fi
 
 #Visualize Ground_RTL orientation
 mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL SH=_mini
