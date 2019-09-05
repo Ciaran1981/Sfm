@@ -109,6 +109,9 @@ mm3d Tapioca File FileImagesNeighbour.xml -1  @SFS
 
 
 mm3d Schnaps .*${EXTENSION} MoveBadImgs=1
+# The sh doesn't seem to work in PIMs etc so best to rename and thus we have reduced set
+mv Homol HomolInit1
+mv Homol_mini Homol
 
 #Compute Relative orientation (Arbitrary system)
 
@@ -133,7 +136,7 @@ if [ -n "${MASK}" ]; then
     read -rsp $'Once mask is saved press any key to continue...\n' -n1 key
     mm3d HomolFilterMasq .*${EXTENSION}  OriMasq3D=Ori-Arbitrary/ Masq3D=NoCams.ply
     # rename homologous points, the filtered one will be seen as the default
-    mv Homol HomolInit
+    mv Homol HomolInit2
     mv HomolMasqFiltered/ Homol
     #mm3d Tapas ${CALIB} .*${EXTENSION} InOri=Ori-Arbitrary/ Out=ArbitraryM
     #mm3d CenterBascule .*${EXTENSION} ArbitraryM RAWGNSS_N Ground_Init_RTL
