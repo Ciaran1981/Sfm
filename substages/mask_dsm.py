@@ -93,8 +93,6 @@ def mask_raster_multi(inputIm,  mval=1, outval = None, mask=None,
     FMT : string
           the output gdal format eg 'Gtiff', 'KEA', 'HFA'
         
-    mode : string
-           None > 10m data, '20' >20m
         
     blocksize : int
                 the chunk of raster read in & write out
@@ -156,7 +154,7 @@ def mask_raster_multi(inputIm,  mval=1, outval = None, mask=None,
                         bnd = inDataset.GetRasterBand(band)
                         array = bnd.ReadAsArray(j, i, numCols, numRows)
                         array[mask != mval]=0
-                        array[array < 0]=0
+                        array[array <= 0]=0
                         bnd.WriteArray(array, j, i)
                 else:
                     

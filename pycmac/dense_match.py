@@ -309,6 +309,8 @@ def tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
     
     mlog = open(path.join(folder, 'Tawnylog.txt'), "w")    
     
+
+    
     cmd = ['mm3d', 'Tawny', mode]  
     
     if kwargs != None:
@@ -330,7 +332,7 @@ def tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
         sys.exit()
     
     
-    orthF = (folder, ootFolder, "Orthophotomosaic.tif") 
+    orthF = path.join(folder, ootFolder, "Orthophotomosaic.tif") 
     
     _set_dataset_config(orthF, proj, FMT = 'Gtiff')
 
@@ -468,7 +470,7 @@ def _subset(folder, csv, ext="JPG"):
 
     
     
-    dF = pd.read_table(csv)
+    dF = pd.read_table(csv, sep=",")
     
     imList = list(dF['#F=N'])
     imList.sort()

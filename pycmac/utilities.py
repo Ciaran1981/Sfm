@@ -93,14 +93,14 @@ def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
     
     call(mm3dFinal)
     
-def convert_c3p(folder, lognm, ext="JPG"):
+def convert_c3p(folder, lognm, ext="JPG", mspec=False):
     
     """
     Edit csv file for c3p to work with MicMac.
     
     This is intended for the output from the software of a C-Astral drone
     
-    This assumes the column order is name, x, y, z, yaw, pitch, roll
+    This assumes the column order is name, x, y, z
     
     Parameters
     ----------  
@@ -109,6 +109,10 @@ def convert_c3p(folder, lognm, ext="JPG"):
             path to folder containing jpegs
     lognm : string
             path to c3p derived csv file
+    ext : string
+            image extension
+    ms : bool
+            If using multispec 2 csvs will be produced, with the file prefixes for the MSpec outputs
                            
     """
     # Get a list of file paths 
@@ -118,40 +122,62 @@ def convert_c3p(folder, lognm, ext="JPG"):
     # these will constitute the first column of the output csv
     files = [os.path.split(file)[1] for file in fileList]
     files.sort()
+    
+
+    
+    fileF = [files[k] for k in range(0, len(files), 5)]
 
     # must be read as an object as we are dealing with strings and numbers
     #npCsv = np.loadtxt(lognm, dtype='object')
     
-    # pd read in with ; sep
-    pdcsv=pd.read_csv(lognm, sep=';')
-    
-    # following solution is very ugly but I can't be arsed with this crap
-    strArr = np.array(files, dtype=np.str)
+    def _mmlog(lognm, outlog, postxt=None):
+        
+        with open(lognm, 'r') as f:
+            header = f.readline().strip('\n').split(';')
+            x_col = header.index('Longitude')
+            y_col = header.index('Latitude')
+            z_col = header.index('Altitude')
+            x = []
+            y = []
+            z = []
+            
+            for line in f:
+                l = line.strip('\n').split(';')
+                
+                x.append(l[x_col])
+                y.append(l[y_col])
+                z.append(l[z_col])
+        
+        if postxt == None:
+            with open(outlog, "w") as oot:
+                oot.write("#F=N X Y Z \n")
+                for idx, vr in enumerate(fileF):
+                    flnm = vr
+                    s = ' '
+                    outStr = s.join([flnm, x[idx], y[idx], z[idx], "\n"])
+                    oot.write(outStr)
+        else:
+            with open(outlog, "w") as oot:
+                oot.write("#F=N X Y Z \n")
+                for idx, vr in enumerate(fileF):
+                    flnm = vr[:-5]+postxt
+                    s = ' '
+                    outStr = s.join([flnm, x[idx], y[idx], z[idx], "\n"])
+                    oot.write(outStr)
+                
+    rgblog = lognm[:-4]+'_rgb.csv'
+    cirlog = lognm[:-4]+'_renir.csv'         
+        
+    if mspec == True:
+                               
+        _mmlog(lognm, rgblog, postxt="RGB.tif")
+        _mmlog(lognm, cirlog, postxt="RRENir.tif")        
+    else:
+        _mmlog(lognm, rgblog)
+        
+        
+                                         
 
-    fleDf= pd.DataFrame(strArr, columns=["#F=N"])
-
-    
-    newCsv = pd.concat([fleDf["#F=N"], pdcsv['Longitude'], pdcsv['Latitude'],
-                       pdcsv['Altitude'], pdcsv['Yaw'],
-                       pdcsv['Pitch'], pdcsv['Roll']], axis=1)
-    
-
-    #del pdcsv
-    # get rid of the first columns consisting number 1
-    #npCsv = pdcsv[:,1:len(pdcsv)]
-
-    
-  
-    
-    # header for MicMac     
-    hdr = ["#F=N", "X", "Y", "Z", "K", "W", "P"]
-           
-    # insert new header
-    newCsv.columns = [hdr]       
-    
-    edNm = lognm[:-4]+'_edited.csv'
-    
-    newCsv.to_csv(edNm, sep=' ', index=False, header=hdr)
 
 def mv_subset(csv, inFolder, outfolder):
     

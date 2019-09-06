@@ -103,5 +103,5 @@ else
      
     # Max seems best
     echo "creating final mosaic"
-    ossim-orthoigen --combiner-type $MTYPE  $FOLDER/*Ort_*tif $OUT
+    ossim-orthoigen --combiner-type $MTYPE  $FOLDER/*Ort_*tif $FOLDER/$OUT
 fi    

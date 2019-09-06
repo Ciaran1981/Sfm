@@ -90,7 +90,7 @@ if [[ "$MODE" = "PIMs" ]]; then
     else
         echo "Doing DSM only"
         mm3d PIMs2MNT $Algorithm DoMnt=1 
-        mm3d PIMs2PLY Forest Out=OUTPUT/pointcloud.ply
+        mm3d PIMs2PLY $Algorithm Out=OUTPUT/pointcloud.ply
     fi
     
     mask_dsm.py -folder $PWD -pims 1
@@ -120,13 +120,13 @@ else
         mm3d Malt $Algorithm ".*.${EXTENSION}" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
     
         mm3d Tawny Ortho-MEC-Malt RadiomEgal=0 
-        mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
+        #mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
     fi
     
      
 
     #PointCloud from Ortho+DEM, with offset substracted to the coordinates to solve the 32bit precision issue
-    mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml  Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
+    #mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml  Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
  
     cd MEC-Malt
     finalDEMs=($(ls Z_Num*_DeZoom*_STD-MALT.tif))
@@ -140,9 +140,9 @@ else
     cp $laststr.tfw $corrstr.tfw
     cd ..
 
-    mm3d ConvertIm Ortho-MEC-Malt/Orthophotomosaic.tif Out=OrthFinal.tif
+    #mm3d ConvertIm Ortho-MEC-Malt/Orthophotomosaic.tif Out=OrthFinal.tif
     
-    gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" Ortho-MEC-Malt/OrthFinal.tif OUTPUT/OrthoImage_geotif.tif
+    gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" Ortho-MEC-Malt/Orthophotomosaic.tif OUTPUT/OrthoImage_geotif.tif
     gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" MEC-Malt/$lastDEM OUTPUT/DEM_geotif.tif
     gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" MEC-Malt/$lastcor OUTPUT/CORR.tif
 fi

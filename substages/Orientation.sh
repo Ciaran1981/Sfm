@@ -126,7 +126,7 @@ fi
 
 #Visualize relative orientation
 
-mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini
+mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary 
 
 # This is worth doing to get rid of spurious points on fringes and below the assumed plain
 if [ -n "${MASK}" ]; then
