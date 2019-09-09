@@ -117,7 +117,7 @@ mv Homol_mini Homol
 
 if [  -n "${SUB}" ]; then
     echo "using calibration subset"
-    calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION} -d ,
+    calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION} 
 else
     mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary SH=_mini | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
@@ -146,7 +146,7 @@ mm3d CenterBascule .*${EXTENSION} Arbitrary RAWGNSS_N Ground_Init_RTL
 #fi
 
 #Visualize Ground_RTL orientation
-mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL SH=_mini
+mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL 
 
 #Bundle adjust using both camera positions and tie points (number in EmGPS option is the quality estimate of the GNSS data in meters)
  
