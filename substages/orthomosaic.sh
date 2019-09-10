@@ -102,6 +102,6 @@ else
     find $FOLDER/*Ort_*tif | parallel "ossim-create-histo -i {}" 
      
     # Max seems best
-    echo "creating final mosaic"
-    ossim-orthoigen --combiner-type $MTYPE  $FOLDER/*Ort_*tif $FOLDER/$OUT
+    echo "creating final mosaic using $MTYPE"
+    ossim-orthoigen --combiner-type "${PBATCH}"  $FOLDER/*Ort_*tif $FOLDER/$OUT
 fi    

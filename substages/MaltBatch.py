@@ -140,13 +140,15 @@ binList = [DMatch, bFolder]
 # Some funcs for use later tile one from pymicmac
 
 # folders to bin
-for crap in binList:
-    try:       
-        rmtree(crap)
-        
-    except OSError:
-        pass
+#for crap in binList:
+#    try:       
+#        rmtree(crap)
+#        
+#    except OSError:
+#        pass
 
+rmtree(DMatch)
+rmtree(bFolder)
 
 mkdir(bFolder)
 

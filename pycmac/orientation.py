@@ -15,7 +15,7 @@ https://github.com/Ciaran1981/Sfm
 """
 
 from subprocess import call
-from os import path, chdir
+from os import path, chdir, rename
 #import gdal
 #import imageio
 import sys
@@ -53,8 +53,8 @@ def feature_match(folder, csv=None, proj="30 +north", resize=None, ext="JPG", sc
     Notes
     -----------
     
-    Purely for convenience within python - not  necessary - the mm3d cmd line
-    is perfectly good
+    Purely for convenience within python - the mm3d cmd line
+    is perfectly good, but this condenses commands and saves on subsetting etc.
     
    
         
@@ -125,13 +125,15 @@ def feature_match(folder, csv=None, proj="30 +north", resize=None, ext="JPG", sc
     if schnaps is True:
         schnapi = ["mm3d", "Schnaps", extFin, "MoveBadImgs=1"]
         _callit(schnapi, featlog)
+        rename(path.join(folder, "Homol"), path.join(folder, "Homol_init"))
+        rename(path.join(folder, "Homol_mini"), path.join(folder, "Homol"))
         
     
      
        
 
 def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
-                  ext="JPG", calib=None, SH="_mini", gpsAcc='1', exif=False):
+                  ext="JPG", calib=None,  gpsAcc='1', exif=False):
     """
     
     A function running the relative orientation/bundle adjustment with micmac 
@@ -139,8 +141,8 @@ def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
     Notes
     -----------
     
-    Purely for convenience within python - not  necessary - the mm3d cmd line
-    is perfectly good
+    Purely for convenience within python -  the mm3d cmd line
+    is perfectly good - condenses a few commands
     
     
         
@@ -169,11 +171,11 @@ def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
         convert back to geographic coordinates, 
         If previous steps always used a csv for img coords ignore this          
     """
-    if SH is None:
-        shFin=""
-    else:
-        shFin = "SH="+SH
-    
+#    if SH is None:
+#        shFin=""
+#    else:
+#        shFin = "SH="+SH
+#    
     extFin = '.*'+ext  
     
     
@@ -184,7 +186,7 @@ def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
     else: 
         #['mm3d', 'Tapas', 'Fraser', '.*tif', 'Out=Arbitrary', 'SH=_mini']
         tlog = open(path.join(folder, algo+'log.txt'), "w")
-        tapas = ["mm3d",  "Tapas", "Fraser", extFin, "Out=Arbitrary",  shFin]
+        tapas = ["mm3d",  "Tapas", "Fraser", extFin, "Out=Arbitrary"]
         _callit(tapas, tlog)
     
         
@@ -200,8 +202,7 @@ def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
     if exif is True:
         
         campari =["mm3d", "Campari", extFin, "Ground_Init_RTL",
-                  "Ground_RTL", "EmGPS=[RAWGNSS_N,"+gpsAcc+"]", "AllFree=1",
-                  shFin]
+                  "Ground_RTL", "EmGPS=[RAWGNSS_N,"+gpsAcc+"]", "AllFree=1"]
         
         _callit(campari, glog)
     
@@ -214,7 +215,7 @@ def bundle_adjust(folder, algo="Fraser", csv=None, proj="30 +north",
         _callit(oriex)
     else:
         campari =["mm3d", "Campari", extFin, "Ground_Init_RTL", "Ground_RTL",
-              "EmGPS=[RAWGNSS_N,"+gpsAcc+"]", "AllFree=1", shFin]
+              "EmGPS=[RAWGNSS_N,"+gpsAcc+"]", "AllFree=1"]
         _callit(campari, glog)
     
     

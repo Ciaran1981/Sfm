@@ -38,7 +38,8 @@ def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
     Notes
     -----------
     
-    Purely for convenience within python - not really necessary - 
+    Purely for convenience within python - not really necessary...
+    ...though typing and image subset in micmac is laborious!
     
     
     see MicMac tools link for further possible kwargs - just put the module cmd as a kwarg
@@ -454,6 +455,8 @@ def num_subset(inFolder, outFolder, num=5, ext="JPG"):
     
     """ 
     Pick a subset of images from a video such as every fifth image (frame)
+    
+    This assumes you have used ffmpeg or a similar application to extract the frames first
     
     
     Parameters 
