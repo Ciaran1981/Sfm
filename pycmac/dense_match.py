@@ -27,6 +27,7 @@ from glob2 import glob
 import osr
 from pycmac.utilities import mask_raster_multi
 from pycmac.gdal_edit import gdal_edit
+from pycmac.gdal_merge import _merge
 from shutil import rmtree
 from joblib import Parallel, delayed
 import pandas as pd
@@ -342,7 +343,7 @@ def tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
     _set_dataset_config(orthF, proj, FMT = 'Gtiff')
 
 def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
-            ms=['r', 'g', 'b']):
+            ms=['r', 'g', 'b'], mp=True):
 
     """
     
@@ -351,8 +352,8 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
     Notes
     -----------
     
-    Purely for convenience within python - not  necessary - the mm3d cmd line
-    is perfectly good
+    The native micmac function only processes single band - this function provides 
+    a multi band capability (3 at present)
     
     see MicMac tools link for further possible args - just put the module cmd as a kwarg
     The kwargs must be exactly the same case as the mm3d cmd options
@@ -370,8 +371,12 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
         
     mode : string
              Ortho folder use either PIMs or Malt here
-    ms : bool
-        if a multi band image
+    ms : list
+        if a multi band image the band names in a list
+        
+    mp : bool
+        if true, process bands in parallel - with large datasets in sequence
+        is recommended
 
     
        
@@ -400,7 +405,9 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
             g.save(path.join(ootDirs[1], tail))
             b.save(path.join(ootDirs[2], tail))
         
-    cmdList = []   
+    cmdList = []  
+    outList = []
+    
     for oot in ootDirs:
         imList = glob(path.join(folder, oot, "*Ort_*.tif"))
         imList.sort()
@@ -416,13 +423,18 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
         sub2 = sub2.replace("'", "") 
         sub2 = sub2.replace(", ", "|")      
         
-        chdir(path.join(folder, oot))   
+        chdir(path.join(folder, oot))
+        
+        outList.append(path.join(folder, oot, "SeamMosaic.tif")) 
         
         cmd = ["mm3d", "TestLib", "SeamlineFeathering", '"'+sub2+'"',
                "ApplyRE="+ApplyRE,  "Out=SeamMosaic.tif"]
         
-        p = Popen(cmd)
-        cmdList.append(p)
+        #p = Popen(cmd)
+        cmdList.append(cmd)
+        if mp == True:
+            p = Popen(cmd)
+            cmdList.append(p)
 #        ret = call(cmd, stdout=mlog)
 #    
 #        if ret !=0:
@@ -431,9 +443,16 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
         
 #        orthF = path.join(folder, ootFolder, "SeamMosaic.tif")
 #        _set_dataset_config(path.abspath(orthF), proj, FMT = 'Gtiff')
+    if mp == True:
+        [c.wait() for c in cmdList]
         
-    [c.wait() for c in cmdList]     
-    chdir(folder)
+    else:
+        [call(c) for c in cmdList]
+    
+    _merge(names = outList, out_file = path.join(folder, "OUTPUT", "FeatherMosaic"))
+    
+
+    #chdir(folder)
 
 def ossimmosaic(folder, proj="30 +north", mode="ossimFeatherMosaic", nt=-1):
     
