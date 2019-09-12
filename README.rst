@@ -231,6 +231,12 @@ A python lib for Micmac and associated geospatial functionality with some enhanc
 
 All the functionallity of the scripts is covered here.  
 
+cd into the pycmac folder and type 
+
+.. code-block:: python
+
+    python setup.py install
+
 Consists of 3 modules:
 
 **pycmac.utilities**
