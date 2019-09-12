@@ -215,8 +215,6 @@ The folder ContrastEnhanceChant includes parameters to high pass imagery interna
 
 It does not permanently alter the images - but this is possible (look up MicMac docs)
 
-
-
 Use
 ~~~~~~~~~~~~~~~~~
 
@@ -228,5 +226,66 @@ type -h to get help on each script e.g. :
 
 Thanks
 ~~~~~~~~~~~~~~~~~
+
+Pycmac
+~~~~~~~~
+
+A python lib for Micmac and associated geospatial functionality with some enhancements.
+
+All the functionallity of the scripts is covered here.  
+
+Consists of 3 modules:
+
+**pycmac.utilities**
+
+- Files sorting and transferring and sub-setting, xml parsing and video processing.
+
+**pycmac.dense_match**
+
+- Wraps all the dense matching algorithms (Malt, PIMs), geo-references datasets allows for easy subsetting. 
+
+**pycmac.orientation**
+- Wraps all the commands associated with image orientation and bundle adjustment, as well sub-setting and xml parsing operations. 
+
+Typical usage and workflow
+
+Typical usage is as with all python libraries and a simple workflow would be:
+
+.. code-block:: python
+
+    from pycmac import orientation, dense_match
+
+Perform the relative orientation of images (poses).
+
+.. code-block:: python
+
+    orientation. feature_match(folder, proj="30 +north",  ext="JPG", schnaps=True)
+
+Perform the bundle adjustment with GPS information.
+
+.. code-block:: python
+
+    orientation.bundle_adjust(folder, algo="Fraser", proj="30 +north",
+                      ext="JPG", calib=pathtocsv.csv, gpsAcc='1')
+                      
+Perform the dense matching using the malt algorithm. The args for the dense matching algorithms are largely identical to the MicMac commands (Malt & PIMs), but carry out additional masking, georeferencing and subsetting.
+
+.. code-block:: python
+                      
+    dense_match.malt(folder, proj="30 +north", mode='Ortho', ext="JPG", orientation="Ground_UTM",
+             DoOrtho='1',  DefCor='0')
+             
+Mosaicing can be performed using Tawny, mm3d seamline feathering (enhanced to process multi-band) and ossim.
+
+
+.. code-block:: python
+
+    dense_match.tawny(folder, proj="30 +north", mode='PIMs')
+
+
+    dense_match.feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1")
+
+
+
 
 Thanks to devs and contributors at MicMac and it's forum, particularly L.Girod whose work inspired the basis of the shell scripts and pymicmac from which the tiling function was derived
