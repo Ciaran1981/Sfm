@@ -46,15 +46,6 @@ def Usage():
     return -1
 
 
-#def ArgIsNumeric(s):
-#    i = 0
-#
-#    while i < len(s):
-#        if ( s[i] < '0' or s[i] > '9') and s[i] != '.' and s[i] != 'e' and s[i] != '+' and s[i] != '-':
-#            return False
-#        i = i + 1
-#
-#    return True
 
 def gdal_edit(datasetname = None, srs = None, ulx = None, uly = None, lrx = None,
               lry = None, nodata = None, unsetnodata = False, xres = None, 
@@ -62,108 +53,7 @@ def gdal_edit(datasetname = None, srs = None, ulx = None, uly = None, lrx = None
               approx_stats = False, unsetmd = False, ro = False, molist = [], 
               gcp_list = [], open_options = [], offset = None, scale = None):
 
-#    argv = gdal.GeneralCmdLineProcessor( argv )
-#    if argv is None:
-#        return -1
 
-#    datasetname = None
-#    srs = None
-#    ulx = None
-#    uly = None
-#    lrx = None
-#    lry = None
-#    nodata = None
-#    unsetnodata = False
-#    xres = None
-#    yres = None
-#    unsetgt = False
-#    unsetstats = False
-#    stats = False
-#    approx_stats = False
-#    unsetmd = False
-#    ro = False
-#    molist = []
-#    gcp_list = []
-#    open_options = []
-#    offset = None
-#    scale = None
-
-#    i = 1
-#    argc = len(argv)
-#    while i < argc:
-#        if argv[i] == '-ro':
-#            ro = True
-#        elif argv[i] == '-a_srs' and i < len(argv)-1:
-#            srs = argv[i+1]
-#            i = i + 1
-#        elif argv[i] == '-a_ullr' and i < len(argv)-4:
-#            ulx = float(argv[i+1])
-#            i = i + 1
-#            uly = float(argv[i+1])
-#            i = i + 1
-#            lrx = float(argv[i+1])
-#            i = i + 1
-#            lry = float(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-tr' and i < len(argv)-2:
-#            xres = float(argv[i+1])
-#            i = i + 1
-#            yres = float(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-a_nodata' and i < len(argv)-1:
-#            nodata = float(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-scale' and i < len(argv)-1:
-#            scale = float(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-offset' and i < len(argv)-1:
-#            offset = float(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-mo' and i < len(argv)-1:
-#            molist.append(argv[i+1])
-#            i = i + 1
-#        elif argv[i] == '-gcp' and i + 4 < len(argv):
-#            pixel = float(argv[i+1])
-#            i = i + 1
-#            line = float(argv[i+1])
-#            i = i + 1
-#            x = float(argv[i+1])
-#            i = i + 1
-#            y = float(argv[i+1])
-#            i = i + 1
-#            if i + 1 < len(argv) and ArgIsNumeric(argv[i+1]):
-#                z = float(argv[i+1])
-#                i = i + 1
-#            else:
-#                z = 0
-#            gcp = gdal.GCP(x,y,z,pixel,line)
-#            gcp_list.append(gcp)
-#        elif argv[i] == '-unsetgt' :
-#            unsetgt = True
-#        elif argv[i] == '-unsetstats':
-#            unsetstats = True
-#        elif argv[i] == '-approx_stats':
-#            stats = True
-#            approx_stats = True
-#        elif argv[i] == '-stats':
-#            stats = True
-#        elif argv[i] == '-unsetmd':
-#            unsetmd = True
-#        elif argv[i] == '-unsetnodata':
-#            unsetnodata = True
-#        elif argv[i] == '-oo' and i < len(argv)-1:
-#            open_options.append(argv[i+1])
-#            i = i + 1
-#        elif argv[i][0] == '-':
-#            sys.stderr.write('Unrecognized option : %s\n' % argv[i])
-#            return Usage()
-#        elif datasetname is None:
-#            datasetname = argv[i]
-#        else:
-#            sys.stderr.write('Unexpected option : %s\n' % argv[i])
-#            return Usage()
-#
-#        i = i + 1
 
     if datasetname is None:
         return Usage()

@@ -342,8 +342,8 @@ def tawny(folder, proj="30 +north", mode='PIMs', **kwargs):
     
     _set_dataset_config(orthF, proj, FMT = 'Gtiff')
 
-def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
-            ms=['r', 'g', 'b'], mp=True):
+def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1", ComputeRE="1",
+            ms=['r', 'g', 'b'], mp=True, subset=None):
 
     """
     
@@ -377,6 +377,9 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
     mp : bool
         if true, process bands in parallel - with large datasets in sequence
         is recommended
+    subset : string
+        the path to a csv defining a subset list of images to process
+        if left as None, all the images will be mosiacked
 
     
        
@@ -404,7 +407,8 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
             r.save(path.join(ootDirs[0], tail))
             g.save(path.join(ootDirs[1], tail))
             b.save(path.join(ootDirs[2], tail))
-        
+    #[Popen(['mm3d', 'Tawny', d, "RadioEgal=1"]) for d in ootDirs]
+    
     cmdList = []  
     outList = []
     
@@ -412,29 +416,37 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1",
         imList = glob(path.join(folder, oot, "*Ort_*.tif"))
         imList.sort()
         
+        if subset != None:
+            sub2 = _subset(folder, subset, ext="tif")
+            # Ort_IMG_0552_RGB.tif
+            sub2 = sub2.replace("IMG", "Ort_IMG")
+
+        else:
         #mlog = open(path.join(folder, 'SeamLog.txt'), "w")  
+       
+            subList = [path.split(item)[1] for item in imList]
         
-        subList = [path.split(item)[1] for item in imList]
-        
-        subStr = str(subList)
-        
-        sub2 = subStr.replace("[", "")
-        sub2 = sub2.replace("]", "")
-        sub2 = sub2.replace("'", "") 
-        sub2 = sub2.replace(", ", "|")      
+            subStr = str(subList)
+            
+            sub2 = subStr.replace("[", "")
+            sub2 = sub2.replace("]", "")
+            sub2 = sub2.replace("'", "") 
+            sub2 = sub2.replace(", ", "|")      
         
         chdir(path.join(folder, oot))
         
         outList.append(path.join(folder, oot, "SeamMosaic.tif")) 
         
         cmd = ["mm3d", "TestLib", "SeamlineFeathering", '"'+sub2+'"',
-               "ApplyRE="+ApplyRE,  "Out=SeamMosaic.tif"]
+               "ApplyRE="+ApplyRE, "ComputeRE="+ComputeRE, "Out=SeamMosaic.tif"]
         
         #p = Popen(cmd)
-        cmdList.append(cmd)
+        
         if mp == True:
             p = Popen(cmd)
             cmdList.append(p)
+        else:
+            cmdList.append(cmd)
 #        ret = call(cmd, stdout=mlog)
 #    
 #        if ret !=0:
