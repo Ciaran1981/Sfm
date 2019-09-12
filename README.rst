@@ -224,9 +224,6 @@ type -h to get help on each script e.g. :
 
    Drone.sh -help
 
-Thanks
-~~~~~~~~~~~~~~~~~
-
 Pycmac
 ~~~~~~~~
 
@@ -266,7 +263,7 @@ Perform the bundle adjustment with GPS information.
 .. code-block:: python
 
     orientation.bundle_adjust(folder, algo="Fraser", proj="30 +north",
-                      ext="JPG", calib=pathtocsv.csv, gpsAcc='1')
+                      ext="JPG", calib="pathtocsv.csv", gpsAcc='1')
                       
 Perform the dense matching using the malt algorithm. The args for the dense matching algorithms are largely identical to the MicMac commands (Malt & PIMs), but carry out additional masking, georeferencing and subsetting.
 
@@ -286,6 +283,8 @@ Mosaicing can be performed using Tawny, mm3d seamline feathering (enhanced to pr
     dense_match.feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1")
 
 
+Thanks
+~~~~~~~~~~~~~~~~~
 
 
-Thanks to devs and contributors at MicMac and it's forum, particularly L.Girod whose work inspired the basis of the shell scripts and pymicmac from which the tiling function was derived
+Thanks to developers and contributors at MicMac and it's forum, particularly L.Girod whose work inspired the basis of the shell scripts and pymicmac from which the tiling function was derived
