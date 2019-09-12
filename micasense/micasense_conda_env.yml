@@ -1,4 +1,4 @@
-name: micasense_Sfm
+name: pycmac
 
 dependencies:
   - python=3

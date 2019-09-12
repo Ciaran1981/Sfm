@@ -13,8 +13,7 @@ from setuptools.command.install import install
 #from io import open
 import subprocess
 
-descript = ('an installer for micasense red-edge which I have forked -'
-            'the library is the work of micasense in which I have only made a minor alteration')
+descript = ('A python lib for MicMac Sfm processing for convenience, streamlining and enhanced functionality')
 
 #with open('README.rst', encoding='utf-8') as f:
 #    long_description = f.read()
@@ -48,7 +47,7 @@ setup(
           'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
 #          'Programming Language :: Python :: 3.4',
 #          'Programming Language :: Python :: 3.5',
-          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: GIS',
           'Topic :: Utilities'],
     # metadata for upload to PyPI
