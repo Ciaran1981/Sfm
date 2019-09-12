@@ -12,7 +12,7 @@ A script for processing to surface reflectance and aligning bands on Micasense
 Rededge
 
 Based on the material on the micasense lib git site, though this uses the 
-micasense lib with multiprocessing disabled as multiprocessing is ised in this
+micasense lib with multiprocessing disabled as multiprocessing is used in this
 scirpt via joblib. 
 
 """

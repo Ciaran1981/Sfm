@@ -16,6 +16,10 @@ dependencies:
   - nb_conda
   - joblib
   - glob2
+  - pillow
+  - tqdm
+  
+  
   - pip:
     - pyzbar
     - pysolar

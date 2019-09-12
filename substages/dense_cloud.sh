@@ -141,7 +141,7 @@ else
     cd ..
 
     mm3d ConvertIm Ortho-MEC-Malt/Orthophotomosaic.tif 
-    cp Ortho-MEC-Malt/Orthophotomosaic.tfw Ortho-MEC-Malt/Orthophotomosaic_Out.tif
+    cp Ortho-MEC-Malt/Orthophotomosaic.tfw Ortho-MEC-Malt/Orthophotomosaic_Out.tfw
     
     gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" Ortho-MEC-Malt/Orthophotomosaic_Out.tif OUTPUT/OrthoImage_geotif.tif
     gdal_translate -a_srs "+proj=utm +zone=${UTM} +ellps=WGS84 +datum=WGS84 +units=m +no_defs" MEC-Malt/$lastDEM OUTPUT/DEM_geotif.tif
