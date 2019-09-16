@@ -430,7 +430,6 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1", ComputeRE="1",
             sub2 = sub2.replace("'", "") 
             sub2 = sub2.replace(", ", "|")      
         
-        print("mosaiking "+oot)
         chdir(path.join(folder, oot))
         
         outList.append(path.join(folder, oot, "SeamMosaic.tif")) 
@@ -439,7 +438,13 @@ def feather(folder, proj="ESPG:32360", mode='PIMs', ApplyRE="1", ComputeRE="1",
                "ApplyRE="+ApplyRE, "ComputeRE="+ComputeRE, szbx,
                "Out=SeamMosaic.tif"]
         print("mosaiking "+oot)
-        call(cmd)
+        cmdList.append(cmd)
+    
+    if mp ==True:    
+        Parallel(n_jobs=3,
+                 verbose=5)(delayed(call)(c) for c in cmdList)
+    else:
+        [call(c) for c in cmdList]
         
         #p = Popen(cmd)
         
