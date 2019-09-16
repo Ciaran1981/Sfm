@@ -23,9 +23,9 @@ from shutil import copy
 from subprocess import call
 import gdal
 from tqdm import tqdm
+import ogr
 
-
-
+from sklearn import metrics
 
 
 def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
@@ -38,7 +38,8 @@ def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
     Notes
     -----------
     
-    Purely for convenience within python - not really necessary - 
+    Purely for convenience within python - not really necessary...
+    ...though typing and image subset in micmac is laborious!
     
     
     see MicMac tools link for further possible kwargs - just put the module cmd as a kwarg
@@ -93,14 +94,14 @@ def calib_subset(folder, csv, ext="JPG",  algo="Fraser"):
     
     call(mm3dFinal)
     
-def convert_c3p(folder, lognm, ext="JPG"):
+def convert_c3p(folder, lognm, ext="JPG", mspec=False):
     
     """
     Edit csv file for c3p to work with MicMac.
     
     This is intended for the output from the software of a C-Astral drone
     
-    This assumes the column order is name, x, y, z, yaw, pitch, roll
+    This assumes the column order is name, x, y, z
     
     Parameters
     ----------  
@@ -109,6 +110,10 @@ def convert_c3p(folder, lognm, ext="JPG"):
             path to folder containing jpegs
     lognm : string
             path to c3p derived csv file
+    ext : string
+            image extension
+    ms : bool
+            If using multispec 2 csvs will be produced, with the file prefixes for the MSpec outputs
                            
     """
     # Get a list of file paths 
@@ -118,40 +123,62 @@ def convert_c3p(folder, lognm, ext="JPG"):
     # these will constitute the first column of the output csv
     files = [os.path.split(file)[1] for file in fileList]
     files.sort()
+    
+
+    
+    fileF = [files[k] for k in range(0, len(files), 5)]
 
     # must be read as an object as we are dealing with strings and numbers
     #npCsv = np.loadtxt(lognm, dtype='object')
     
-    # pd read in with ; sep
-    pdcsv=pd.read_csv(lognm, sep=';')
-    
-    # following solution is very ugly but I can't be arsed with this crap
-    strArr = np.array(files, dtype=np.str)
+    def _mmlog(lognm, outlog, postxt=None):
+        
+        with open(lognm, 'r') as f:
+            header = f.readline().strip('\n').split(';')
+            x_col = header.index('Longitude')
+            y_col = header.index('Latitude')
+            z_col = header.index('Altitude')
+            x = []
+            y = []
+            z = []
+            
+            for line in f:
+                l = line.strip('\n').split(';')
+                
+                x.append(l[x_col])
+                y.append(l[y_col])
+                z.append(l[z_col])
+        
+        if postxt == None:
+            with open(outlog, "w") as oot:
+                oot.write("#F=N X Y Z \n")
+                for idx, vr in enumerate(fileF):
+                    flnm = vr
+                    s = ' '
+                    outStr = s.join([flnm, x[idx], y[idx], z[idx], "\n"])
+                    oot.write(outStr)
+        else:
+            with open(outlog, "w") as oot:
+                oot.write("#F=N X Y Z \n")
+                for idx, vr in enumerate(fileF):
+                    flnm = vr[:-5]+postxt
+                    s = ' '
+                    outStr = s.join([flnm, x[idx], y[idx], z[idx], "\n"])
+                    oot.write(outStr)
+                
+    rgblog = lognm[:-4]+'_rgb.csv'
+    cirlog = lognm[:-4]+'_renir.csv'         
+        
+    if mspec == True:
+                               
+        _mmlog(lognm, rgblog, postxt="RGB.tif")
+        _mmlog(lognm, cirlog, postxt="RRENir.tif")        
+    else:
+        _mmlog(lognm, rgblog)
+        
+        
+                                         
 
-    fleDf= pd.DataFrame(strArr, columns=["#F=N"])
-
-    
-    newCsv = pd.concat([fleDf["#F=N"], pdcsv['Longitude'], pdcsv['Latitude'],
-                       pdcsv['Altitude'], pdcsv['Yaw'],
-                       pdcsv['Pitch'], pdcsv['Roll']], axis=1)
-    
-
-    #del pdcsv
-    # get rid of the first columns consisting number 1
-    #npCsv = pdcsv[:,1:len(pdcsv)]
-
-    
-  
-    
-    # header for MicMac     
-    hdr = ["#F=N", "X", "Y", "Z", "K", "W", "P"]
-           
-    # insert new header
-    newCsv.columns = [hdr]       
-    
-    edNm = lognm[:-4]+'_edited.csv'
-    
-    newCsv.to_csv(edNm, sep=' ', index=False, header=hdr)
 
 def mv_subset(csv, inFolder, outfolder):
     
@@ -423,4 +450,96 @@ def mask_raster_multi(inputIm,  mval=1, outval = None, mask=None,
            
         inDataset.FlushCache()
         inDataset = None
+ 
+def num_subset(inFolder, outFolder, num=5, ext="JPG"):
+    
+    """ 
+    Pick a subset of images from a video such as every fifth image (frame)
+    
+    This assumes you have used ffmpeg or a similar application to extract the frames first
+    
+    
+    Parameters 
+    ----------- 
+    
+    inFolder : string
+              the input raster 
         
+    outFolder : string
+           the masking value that delineates pixels to be kept
+        
+    num : int 
+              the subdivision - e.g. every fifth image
+
+    ext : string
+                 image extention e.g JPG, tif
+        
+
+    """
+    # ffmpeg cmd just in case I end up[ doing anything like this]
+    # ffmpeg -i *.mp4 Im_0000_%5d_Ok.png
+    
+    fileList = glob2.glob(os.path.join(inFolder, "*."+ext))
+        
+    
+    
+#    files = [os.path.split(file)[1] for file in fileList]
+#    files.sort()
+    
+    ootList = []
+    
+    for f in range(0, len(fileList), num):
+        ootList.append(fileList[f])
+        
+        
+    
+    Parallel(n_jobs=-1,verbose=5)(delayed(copy)(fl, 
+            outFolder) for fl in ootList)
+
+
+def rmse_vector_lyr(inShape, attributes):
+
+    """ 
+    Using sklearn get the rmse of 2 vector attributes 
+    (the actual and predicted of course in the order ['actual', 'pred'])
+    
+    
+    Parameters 
+    ----------- 
+    
+    inShape : string
+              the input vector of OGR type
+        
+    attributes : list
+           a list of strings denoting the attributes
+         
+
+    """    
+    
+    #open the layer etc
+    shp = ogr.Open(inShape)
+    lyr = shp.GetLayer()
+    labels = np.arange(lyr.GetFeatureCount())
+    
+    # empty arrays for att
+    pred = np.zeros((1, lyr.GetFeatureCount()))
+    true = np.zeros((1, lyr.GetFeatureCount()))
+    
+    for label in labels: 
+        feat = lyr.GetFeature(label)
+        true[:,label] = feat.GetField(attributes[0])
+        pred[:,label] = feat.GetField(attributes[1])
+    
+    
+    
+    error = np.sqrt(metrics.mean_squared_error(true, pred))
+    
+    return error
+    
+        
+    
+    
+
+
+
+       

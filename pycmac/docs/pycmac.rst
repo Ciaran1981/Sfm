@@ -4,14 +4,6 @@ pycmac package
 Module contents
 ---------------
 
-.. automodule:: pycmac
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Submodules
-----------
 
 pycmac.orientation module
 ----------------------------
@@ -33,6 +25,13 @@ pycmac.utilities module
 --------------------------------
 
 .. automodule:: utilities
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+--------------------------------
+
+.. automodule:: mspec
     :members:
     :undoc-members:
     :show-inheritance:

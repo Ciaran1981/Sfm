@@ -2,6 +2,7 @@ name: pycmac
 
 dependencies:
   - python=3
+  - opencv
   - numpy
   - jupyter
   - matplotlib
@@ -22,4 +23,8 @@ dependencies:
   - pandas
   
   
-
+  - pip:
+    - pyzbar
+    - pysolar
+    - mapboxgl
+    - git+https://github.com/smarnach/pyexiftool.git#egg=pyexiftoolpy

@@ -22,7 +22,7 @@ descript = ('A python lib for MicMac Sfm processing for convenience, streamlinin
 class CondaInstall(install):
     def run(self):
         try:
-            command = ['conda', 'env', 'create', '-f', 'micasense_conda_env.yml']
+            command = ['conda', 'env', 'create', '-f', 'pycmac_conda_env.yml']
             #packages = open('conda_modules.txt').read().splitlines()
 #            command.extend(packages)
             subprocess.check_call(command)

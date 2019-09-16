@@ -10,7 +10,7 @@ pycmac is a Python module for using the Micmac Structure from Motion (SfM) libra
 
 The module also contains various fuctionality for manipulating data associated with the SfM process as well as some enhancements to the basic micmac routines, such as processing Micasense multi-spectral data.  
 
-The aim is to produce convenient, minimal commands for putting together SfM workflows using pyhton and the excellent MicMac lib
+The aim is to produce convenient, minimal commands for putting together SfM workflows using python and the excellent MicMac lib.
 
 Contents
 ^^^^^^^^
@@ -19,8 +19,6 @@ Contents
    :maxdepth: 3
    
    quickstart
-
-   pycmac
 
    modules
 

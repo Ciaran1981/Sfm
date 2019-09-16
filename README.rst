@@ -8,6 +8,27 @@ A series of python and shell scripts for processing data from drones, originally
 Installation
 ~~~~~~~~~~~~~~~~~
 
+Pycmac
+~~~~~~~~
+
+A python lib for Micmac and associated geospatial functionality with some enhancements.
+
+All the functionallity of the above scripts is covered here.  
+
+Documentation is found here, including a quick start. 
+
+
+https://ciaran1981.github.io/pycmac/docs/_build/html/index.html
+
+cd into the pycmac folder and type 
+
+.. code-block:: python
+
+    python setup.py install
+
+This will install pycmac and dependencies into a conda environment. Remember to activate it when you use it. 
+
+
 
 **The scripts**
 
@@ -110,26 +131,7 @@ Install OSSIM via tha ubuntu GIS or equivalent repo
 
 - see here https://trac.osgeo.org/ossim/wiki/ossimPreferenceFile
 
-**micasense**
 
-cd into the micasense folder and type 
-
-.. code-block:: python
-
-    python setup.py install
-    
-You will then see the instructions but anyway - activate when using the multspec scripts
-
-.. code-block:: bash
-
-    conda activate micasense_Sfm
-or
-
-.. code-block:: bash
-
-    source activate micasense_Sfm
-    
-This is my own fork of micasense but only has a couple of lines changed as well as getting its dependencies from the official conda
 
 
 Contents
@@ -223,24 +225,6 @@ type -h to get help on each script e.g. :
 .. code-block:: bash
 
    Drone.sh -help
-
-Pycmac
-~~~~~~~~
-
-A python lib for Micmac and associated geospatial functionality with some enhancements.
-
-All the functionallity of the above scripts is covered here.  
-
-Documentation is found here, including a quick start. 
-
-
-https://ciaran1981.github.io/pycmac/docs/_build/html/index.html
-
-cd into the pycmac folder and type 
-
-.. code-block:: python
-
-    python setup.py install
 
 
 
