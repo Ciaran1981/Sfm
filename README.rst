@@ -229,7 +229,11 @@ Pycmac
 
 A python lib for Micmac and associated geospatial functionality with some enhancements.
 
-All the functionallity of the scripts is covered here.  
+All the functionallity of the above scripts is covered here.  
+
+Documentation is found here 
+
+https://github.com/Ciaran1981/Sfm/blob/master/pycmac/docs/docs/html/index.html
 
 cd into the pycmac folder and type 
 
