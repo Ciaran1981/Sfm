@@ -162,4 +162,4 @@ else
 fi
 
 
-mm3d AperiCloud .*${EXTENSION} Ground_UTM SH=_mini
+mm3d AperiCloud .*${EXTENSION} Ground_UTM 
