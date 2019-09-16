@@ -233,7 +233,8 @@ All the functionallity of the above scripts is covered here.
 
 Documentation is found here, including a quick start. 
 
-https://ciaran1981.github.io/pycmac/docs/html/index.html
+
+https://ciaran1981.github.io/pycmac/docs/_build/html/index.html
 
 cd into the pycmac folder and type 
 
