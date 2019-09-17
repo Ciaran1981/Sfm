@@ -3,32 +3,11 @@
 Structure from Motion workflows
 ============
 
-A series of python and shell scripts for processing data from drones, originally for the the C-Astral Bramour PPX platform, but will work with most imagery.
+A series of shell and python scripts for Structure from motion processing
 
-Installation
-~~~~~~~~~~~~~~~~~
+For a more compact and likely easier to use version - please see my pycmac library here:
 
-Pycmac
-~~~~~~~~
-
-A python lib for Micmac and associated geospatial functionality with some enhancements.
-
-All the functionallity of the above scripts is covered here.  
-
-Documentation is found here, including a quick start. 
-
-
-https://ciaran1981.github.io/pycmac/docs/_build/html/index.html
-
-cd into the pycmac folder and type 
-
-.. code-block:: python
-
-    python setup.py install
-
-This will install pycmac and dependencies into a conda environment. Remember to activate it when you use it. 
-
-
+https://github.com/Ciaran1981/pycmac
 
 **The scripts**
 
