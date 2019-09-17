@@ -1,0 +1,54 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter A
+  \item \spxentry{align\_template()}\spxextra{in module mspec}, \hyperpage{8}
+
+  \indexspace
+  \bigletter B
+  \item \spxentry{bundle\_adjust()}\spxextra{in module orientation}, \hyperpage{4}
+
+  \indexspace
+  \bigletter C
+  \item \spxentry{calib\_subset()}\spxextra{in module utilities}, \hyperpage{7}
+  \item \spxentry{convert\_c3p()}\spxextra{in module utilities}, \hyperpage{7}
+
+  \indexspace
+  \bigletter D
+  \item \spxentry{dense\_match}\spxextra{module}, \hyperpage{5}
+
+  \indexspace
+  \bigletter F
+  \item \spxentry{feature\_match()}\spxextra{in module orientation}, \hyperpage{4}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{make\_sys\_utm()}\spxextra{in module utilities}, \hyperpage{7}
+  \item \spxentry{make\_xml()}\spxextra{in module utilities}, \hyperpage{7}
+  \item \spxentry{Malt()}\spxextra{in module dense\_match}, \hyperpage{5}
+  \item \spxentry{mask\_raster\_multi()}\spxextra{in module utilities}, \hyperpage{7}
+  \item \spxentry{mspec}\spxextra{module}, \hyperpage{8}
+  \item \spxentry{mspec\_proc()}\spxextra{in module mspec}, \hyperpage{8}
+  \item \spxentry{mv\_subset()}\spxextra{in module utilities}, \hyperpage{8}
+
+  \indexspace
+  \bigletter O
+  \item \spxentry{orientation}\spxextra{module}, \hyperpage{4}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{PIMs()}\spxextra{in module dense\_match}, \hyperpage{5}
+  \item \spxentry{PIMs2MNT()}\spxextra{in module dense\_match}, \hyperpage{6}
+
+  \indexspace
+  \bigletter T
+  \item \spxentry{Tawny()}\spxextra{in module dense\_match}, \hyperpage{6}
+
+  \indexspace
+  \bigletter U
+  \item \spxentry{utilities}\spxextra{module}, \hyperpage{7}
+
+\end{sphinxtheindex}
