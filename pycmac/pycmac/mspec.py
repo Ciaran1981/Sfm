@@ -19,7 +19,7 @@ import pycmac.micasense.imageutils as imageutils
 import pycmac.micasense.capture as capture
 
 import numpy as np
-import pycmac.imageset as imageset
+import pycmac.micasense.imageset as imageset
 from glob2 import glob
 import imageio
 import cv2

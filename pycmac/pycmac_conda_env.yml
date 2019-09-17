@@ -8,6 +8,7 @@ dependencies:
   - matplotlib
   - gdal
   - scikit-image
+  - scikit-learn
   - pytest
   - git
   - pandas
