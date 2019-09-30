@@ -18,7 +18,8 @@ scirpt via joblib.
 """
 import os#, sys
 import matplotlib.pyplot as plt
-#from PIL import Image
+from shutil import rmtree
+from PIL import Image
 #import micasense.metadata as metadata
 #import micasense.utils as msutils
 #import micasense.plotutils as plotutils
@@ -36,7 +37,9 @@ import cv2
 from skimage import exposure, util
 from subprocess import call#, check_call
 from joblib import Parallel, delayed
-import gdal#, gdal_array
+#import gdal#, gdal_array
+import warnings
+import gdal
 
 
 exiftoolPath=None
@@ -99,7 +102,6 @@ print("Aligning images, may take a while...")
 Right so each capture means each set of bands 1-5
 This requires the image list to be sorted in a way that can be aligned
 It appears as though micasense have done this with their lib
-
 
 '''
 
@@ -272,7 +274,7 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
                                             cropped_dimensions,
                                             None, img_type="reflectance")
     
-    im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32 )
+    im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32)
     
     for iM in range(0,im_aligned.shape[2]):
         im_display[:,:,iM] =  imageutils.normalize(im_aligned[:,:,iM])
@@ -281,27 +283,52 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
     #cir = im_display[:,:,[3,2,1]] 
     RRENir = im_display[:,:,[4,3,2]] 
     
-    imoot = [rgb, RRENir]
+#    imoot = [rgb, RRENir]
+    
+    del im_display
+    
     imtags = ["RGB.tif", "RRENir.tif"]
     im = i.images[1]
     hd, nm = os.path.split(im.path[:-5])
     
-    for ind, k in enumerate(bndFolders):
-         
+    
+
+    #cmdList = []
+    
+    def _writeim(image, folder, nametag, im):
+    
+    #for ind, k in enumerate(bndFolders):      
          #img8 = bytescale(imoot[ind])
-         imgre = exposure.rescale_intensity(imoot[ind])
-         img8 = util.img_as_ubyte(imgre)
-         outfile = os.path.join(k, nm+imtags[ind])
-         
-         imageio.imwrite(outfile, img8)
+        imgre = exposure.rescale_intensity(image)
+     
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            img8 = util.img_as_ubyte(imgre)
+            del imgre
+            outFile = os.path.join(folder, nm+nametag)
+        #imageio.imwrite(outfile, img8)
         
-         cmd = ["exiftool", "-tagsFromFile", im.path,  "-file:all", "-iptc:all",
-               "-exif:all",  "-xmp", "-Composite:all", outfile, 
+        imOut = Image.fromarray(img8)
+    
+        imOut.save(outFile)
+
+        del img8
+        cmd = ["exiftool", "-tagsFromFile", im.path,  "-file:all", "-iptc:all",
+               "-exif:all",  "-xmp", "-Composite:all", outFile, 
                "-overwrite_original"]
-         call(cmd)
+        call(cmd)
+        
+        
+    
+    _writeim(rgb, bndFolders[0], imtags[0], im)
+    del rgb    
+    _writeim(RRENir, bndFolders[1], imtags[1], im)
+    del RRENir, im, i
+    
+         
 # for ref
 #[proc_imgs(imCap, warp_matrices, reflFolder) for imCap in imgset]
-def proc_stack(i, warp_matrices, bndFolders, panel_irradiance):
+def proc_stack(i, warp_matrices, panel_irradiance):
     
     i.compute_reflectance(panel_irradiance) 
         #i.plot_undistorted_reflectance(panel_irradiance)  
@@ -329,12 +356,20 @@ def proc_stack(i, warp_matrices, bndFolders, panel_irradiance):
     outRaster = driver.Create(filename, cols, rows, 5, gdal.GDT_Byte)
     normalize = False
     
-    # Output a 'stack' in the same band order as RedEdge/Alutm
-    # Blue,Green,Red,NIR,RedEdge[,Thermal]
+   #  Output a 'stack' in the same band order as RedEdge/Alutm
+      
     
-    # NOTE: NIR and RedEdge are not in wavelength order!
+    outRaster = driver.Create(filename, cols, rows, 5, gdal.GDT_Byte)
+    normalize = False
     
+#     Output a 'stack' in the same band order as RedEdge/Alutm
+#     Blue,Green,Red,NIR,RedEdge[,Thermal]
+##    
+#     NOTE: NIR and RedEdge are not in wavelength order!
+#    
     i.compute_reflectance(panel_irradiance+[0])
+    
+#    i.save_capture_as_reflectance_stack(filename, panel_irradiance+[0], normalize = True)
     
     for i in range(0,5):
         outband = outRaster.GetRasterBand(i+1)
@@ -366,33 +401,25 @@ def proc_stack(i, warp_matrices, bndFolders, panel_irradiance):
          
 if args.stack != None:
     
-    if args.stack == 1:
-        print("Producing pairs of 3-band composites single thread")
-        bndNames = ['RGB', 'RRENir']
-        bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
-        [os.mkdir(bf) for bf in bndFolders]
-        [proc_imgs_comp(imCap, warp_matrices, bndFolders, panel_irradiance) for imCap in imgset.captures]
+
+    print("Producing pairs of 3-band composites muti core")
+    #prep the dir
+    bndNames = ['RGB', 'RRENir']
+    bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
     
-    if args.stack == 2:
-        print("Producing 5-band composites")
-        bndNames = ['B', 'G', 'R', 'NIR', 'RE' ]
-        bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
-        [os.mkdir(bf) for bf in bndFolders]
+    for k in bndFolders:
+        if os.path.isdir(k) == True:
+            rmtree(k)
     
-        [proc_stack(imCap ,warp_matrices,
-                    panel_irradiance) for imCap in imgset.captures]
+    [os.mkdir(bf) for bf in bndFolders]
+    
+    Parallel(n_jobs=args.noT,
+             verbose=2)(delayed(proc_imgs_comp)(imCap, warp_matrices,
+                       bndFolders,
+                       panel_irradiance) for imCap in imgset.captures)
+    
         
-    elif args.stack == 3:
-        print("Producing pairs of 3-band composites muti core")
-        #prep the dir
-        bndNames = ['RGB', 'RRENir']
-        bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
-        [os.mkdir(bf) for bf in bndFolders]
-        
-        Parallel(n_jobs=args.noT,
-                 verbose=2)(delayed(proc_imgs_comp)(imCap, warp_matrices,
-                           bndFolders,
-                           panel_irradiance) for imCap in imgset.captures)
+
         
 
 else:
@@ -400,6 +427,9 @@ else:
     
     bndNames = ['Blue', 'Green', 'Red', 'NIR', 'Red edge']
     bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
+    for k in bndFolders:
+            if os.path.isdir(k) == True:
+                rmtree(k)
     [os.mkdir(bf) for bf in bndFolders]
     Parallel(n_jobs=args.noT,
              verbose=2)(delayed(proc_imgs)(imCap,

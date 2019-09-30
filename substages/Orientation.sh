@@ -64,8 +64,11 @@ done
 
 shift $((OPTIND-1))
 
-
+# bramor
 #mm3d SetExif ."*{EXTENSION}" F35=45 F=30 Cam=ILCE-6000  
+# # A PHANTOM 4
+# mm3d SetExif .*JPG F35=20 F=3.6 Cam=DJI
+#exiftool *.JPG | grep "Focal Length"
 # magick mogrify -resize 50%
 
 #create UTM file (after deleting any existing one)
@@ -119,7 +122,7 @@ if [  -n "${SUB}" ]; then
     echo "using calibration subset"
     calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION} 
 else
-    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary SH=_mini | tee ${CALIB}RelBundle.txt
+    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
 fi    
 

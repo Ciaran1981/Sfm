@@ -34,6 +34,10 @@ parser.add_argument("-in2", "--i2", type=str, required=False,
 
 parser.add_argument("-o", "--oot", type=str, required=False, 
                     help="out raster")
+#
+#parser.add_argument("-clrcmp", "--cmp", type=str, required=False, 
+#                    help="out raster")
+
 
 args = parser.parse_args() 
 
@@ -82,9 +86,13 @@ def _copy_dataset_config(inDataset, FMT = 'Gtiff', outMap = 'copy',
     
     return outDataset
 
-def stack_rasters(inRas1, inRas2, outRas, blocksize=256):
-    rasterList1 = [3,2,1]
-    rasterList2 = [2, 3]
+def stack_rasters(inRas1, inRas2, outRas, blocksize=256):# clcp=args.cmp):
+    
+#    if clcp == True:
+#        rasterList1 = [2,3]
+#        rasterList2 = []
+    rasterList1 = [1,2,3]
+    rasterList2 = [3, 2]
     
     inDataset1 = gdal.Open(inRas1)
     inDataset2 = gdal.Open(inRas2)
