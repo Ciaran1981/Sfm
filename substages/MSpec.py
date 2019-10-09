@@ -44,6 +44,8 @@ import gdal
 
 exiftoolPath=None
 
+# MSpec.py -img 000 -precal calib -o SR2 -alIm 0007 -refBnd 4  -stk 1 -plots True -wm Affine
+
 helpStk = ("1 = 5 band stack,\n 2 = 2x 3 band images ordered RGB, RedReNir,"
            "\n 2 = 2x 3 band images ordered RGB, RedReNir single thread"
            "\n 2 = 2x 3 band images ordered RGB, RedReNir multi core")
@@ -80,7 +82,19 @@ parser.add_argument("-stk", "--stack", type=int, required=False, default=None,
 parser.add_argument("-plots", "--plts", type=bool, required=False, default=False,
                     help="whether to plot the alignment")
 
+parser.add_argument("-wm", "--wrpmd", type=str, required=False, default='MH',
+                    help="whether to use Motion Homog (MH) (def. MH) or Motion Affine (Affine)")
+
+
+    
+
 args = parser.parse_args() 
+
+
+if args.wrpmd == "Affine":
+    warp_md = cv2.MOTION_AFFINE
+else:
+    warp_md = cv2.MOTION_HOMOGRAPHY
 
 calibPre = os.path.abspath(args.pcal)
 
@@ -148,12 +162,12 @@ imAl.compute_reflectance(panel_irradiance)
 rf = args.rB
 
 # func to align and display the result. 
-def align_template(imAl, mx, reflFolder, ref_ind=rf):
+def align_template(imAl, mx, reflFolder, warp_md, ref_ind=rf):
 
     
     warp_matrices, alignment_pairs = imageutils.align_capture(imAl,
                                                               ref_index=ref_ind, 
-                                                              warp_mode=cv2.MOTION_HOMOGRAPHY,
+                                                              warp_mode=warp_md,
                                                               max_iterations=mx)
     for x,mat in enumerate(warp_matrices):
         print("Band {}:\n{}".format(x,mat))
@@ -170,14 +184,14 @@ def align_template(imAl, mx, reflFolder, ref_ind=rf):
         dist_coeffs.append(img.cv2_distortion_coeff())
         cam_mats.append(img.cv2_camera_matrix())
         
-    warp_mode = cv2.MOTION_HOMOGRAPHY #alignment_pairs[0]['warp_mode']
-    match_index = alignment_pairs[0]['ref_index']
+    #warp_mode = cv2.MOTION_HOMOGRAPHY #alignment_pairs[0]['warp_mode']
+    match_index = rf#alignment_pairs[0]['ref_index']
     
     cropped_dimensions, edges = imageutils.find_crop_bounds(imAl, 
                                                             warp_matrices,
-                                                            warp_mode=cv2.MOTION_HOMOGRAPHY)
+                                                            warp_mode=warp_md)
    # capture, warp_matrices, cv2.MOTION_HOMOGRAPHY, cropped_dimensions, None, img_type="reflectance",
-    im_aligned = imageutils.aligned_capture(imAl, warp_matrices, warp_mode,
+    im_aligned = imageutils.aligned_capture(imAl, warp_matrices, warp_md,
                                             cropped_dimensions, match_index,
                                             img_type="reflectance")
     
@@ -214,7 +228,8 @@ def align_template(imAl, mx, reflFolder, ref_ind=rf):
     
     return warp_matrices, alignment_pairs#, dist_coeffs, cam_mats, cropped_dimensions
 
-warp_matrices, alignment_pairs = align_template(imAl, args.mxiter,reflFolder,
+warp_matrices, alignment_pairs = align_template(imAl, args.mxiter, reflFolder,
+                                                warp_md,
                                                 ref_ind=rf)
 
     
@@ -223,7 +238,7 @@ warp_matrices, alignment_pairs = align_template(imAl, args.mxiter,reflFolder,
 
 # Main func to  write bands to their respective directory
 
-def proc_imgs(i, warp_matrices, bndFolders, panel_irradiance, normalize=None):
+def proc_imgs(i, warp_matrices, bndFolders, panel_irradiance, warp_md, normalize=None):
     
     
 #    for i in imgset.captures: 
@@ -232,12 +247,12 @@ def proc_imgs(i, warp_matrices, bndFolders, panel_irradiance, normalize=None):
     #i.plot_undistorted_reflectance(panel_irradiance)  
 
 
-    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices)
+    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices,
+                                                            warp_mode=warp_md)
     
     im_aligned = imageutils.aligned_capture(i, warp_matrices,
-                                            cv2.MOTION_HOMOGRAPHY,
                                             cropped_dimensions,
-                                            None, img_type="reflectance")
+                                            warp_md, img_type="reflectance", warp_mode=warp_md)
     
     im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32 )
     
@@ -259,7 +274,7 @@ def proc_imgs(i, warp_matrices, bndFolders, panel_irradiance, normalize=None):
                "-overwrite_original"]
          call(cmd)
 
-def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
+def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance, rf, warp_md):
     
     
     
@@ -270,9 +285,9 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
     cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices)
     
     im_aligned = imageutils.aligned_capture(i, warp_matrices,
-                                            cv2.MOTION_HOMOGRAPHY,
                                             cropped_dimensions,
-                                            None, img_type="reflectance")
+                                            warp_md,
+                                            match_index=rf, img_type="reflectance")
     
     im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32)
     
@@ -328,18 +343,20 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance):
          
 # for ref
 #[proc_imgs(imCap, warp_matrices, reflFolder) for imCap in imgset]
-def proc_stack(i, warp_matrices, panel_irradiance):
+def proc_stack(i, warp_matrices, panel_irradiance, warp_md):
     
     i.compute_reflectance(panel_irradiance) 
         #i.plot_undistorted_reflectance(panel_irradiance)  
     
     
-    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices)
+    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices, rf, warp_md)
     
     im_aligned = imageutils.aligned_capture(i, warp_matrices,
-                                            cv2.MOTION_HOMOGRAPHY,
                                             cropped_dimensions,
-                                            None, img_type="reflectance")
+                                            warp_md,
+                                            match_index=rf, 
+                                            img_type="reflectance",
+                                            )
     
     im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), 
                           dtype=np.float32)
@@ -416,7 +433,7 @@ if args.stack != None:
     Parallel(n_jobs=args.noT,
              verbose=2)(delayed(proc_imgs_comp)(imCap, warp_matrices,
                        bndFolders,
-                       panel_irradiance) for imCap in imgset.captures)
+                       panel_irradiance, rf, warp_md) for imCap in imgset.captures)
     
         
 
