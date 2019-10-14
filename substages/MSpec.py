@@ -41,7 +41,6 @@ from joblib import Parallel, delayed
 import warnings
 import gdal
 
-
 exiftoolPath=None
 
 # MSpec.py -img 000 -precal calib -o SR2 -alIm 0007 -refBnd 4  -stk 1 -plots True -wm Affine
@@ -82,8 +81,8 @@ parser.add_argument("-stk", "--stack", type=int, required=False, default=None,
 parser.add_argument("-plots", "--plts", type=bool, required=False, default=False,
                     help="whether to plot the alignment")
 
-parser.add_argument("-wm", "--wrpmd", type=str, required=False, default='MH',
-                    help="whether to use Motion Homog (MH) (def. MH) or Motion Affine (Affine)")
+#parser.add_argument("-wm", "--wrpmd", type=str, required=False, default='MH',
+#                    help="whether to use Motion Homog (MH) (def. MH) or Motion Affine (Affine)")
 
 
     
@@ -91,11 +90,12 @@ parser.add_argument("-wm", "--wrpmd", type=str, required=False, default='MH',
 args = parser.parse_args() 
 
 
-if args.wrpmd == "Affine":
-    warp_md = cv2.MOTION_AFFINE
-else:
-    warp_md = cv2.MOTION_HOMOGRAPHY
+#if args.wrpmd == "Affine":
+#    warp_md = cv2.MOTION_AFFINE
+#elif:
+#    warp_md = 
 
+warp_md = cv2.MOTION_HOMOGRAPHY
 calibPre = os.path.abspath(args.pcal)
 
 if args.pstcal != None:
@@ -250,14 +250,16 @@ def proc_imgs(i, warp_matrices, bndFolders, panel_irradiance, warp_md, normalize
     cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices,
                                                             warp_mode=warp_md)
     
-    im_aligned = imageutils.aligned_capture(i, warp_matrices,
-                                            cropped_dimensions,
-                                            warp_md, img_type="reflectance", warp_mode=warp_md)
+
+    
+    im_aligned = imageutils.aligned_capture(i, warp_matrices, warp_md,
+                                            cropped_dimensions, rf,
+                                            img_type="reflectance")
     
     im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32 )
     
     for iM in range(0,im_aligned.shape[2]):
-        im_display[:,:,iM] =  imageutils.normalize(im_aligned[:,:,iM])*65535
+        im_display[:,:,iM] =  imageutils.normalize(im_aligned[:,:,iM])*32768
     
     for k in range(0,im_display.shape[2]):
          im = i.images[k]
@@ -285,24 +287,32 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance, rf, warp_md):
     cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices)
     
     im_aligned = imageutils.aligned_capture(i, warp_matrices,
-                                            cropped_dimensions,
                                             warp_md,
+                                            cropped_dimensions,
                                             match_index=rf, img_type="reflectance")
     
-    im_display = np.zeros((im_aligned.shape[0],im_aligned.shape[1],5), dtype=np.float32)
+    
+    
+    im_display = np.zeros((im_aligned.shape[0], im_aligned.shape[1], 5), dtype=np.float32)
     
     for iM in range(0,im_aligned.shape[2]):
-        im_display[:,:,iM] =  imageutils.normalize(im_aligned[:,:,iM])
+        im_display[:,:,iM] =  imageutils.normalize(im_aligned[:,:,iM])*32768
+    
+
     
     rgb = im_display[:,:,[2,1,0]] 
     #cir = im_display[:,:,[3,2,1]] 
     RRENir = im_display[:,:,[4,3,2]] 
     
+#    cir = im_display[:,:,[3,2,1]]
+#    
+#    grRE = im_display[:,:,[4,2,1]] 
+#    
 #    imoot = [rgb, RRENir]
     
     del im_display
     
-    imtags = ["RGB.tif", "RRENir.tif"]
+    imtags = ["RGB.tif", "RRENir.tif"]#, "GRNir.tif", "GRRE.tif"]
     im = i.images[1]
     hd, nm = os.path.split(im.path[:-5])
     
@@ -314,20 +324,21 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance, rf, warp_md):
     
     #for ind, k in enumerate(bndFolders):      
          #img8 = bytescale(imoot[ind])
-        imgre = exposure.rescale_intensity(image)
+        #imgre = exposure.rescale_intensity(image,  out_range='uint16')
      
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            img8 = util.img_as_ubyte(imgre)
-            del imgre
-            outFile = os.path.join(folder, nm+nametag)
+        #with warnings.catch_warnings():
+        #warnings.simplefilter("ignore")
+        img16 = np.uint16(np.round(image, decimals=0))
+        del image
+        outFile = os.path.join(folder, nm+nametag)
         #imageio.imwrite(outfile, img8)
         
-        imOut = Image.fromarray(img8)
+        #imOut = Image.fromarray(img16)
     
-        imOut.save(outFile)
-
-        del img8
+        #imOut.save(outFile)
+        imageio.imwrite(outFile, img16)
+        
+        del img16
         cmd = ["exiftool", "-tagsFromFile", im.path,  "-file:all", "-iptc:all",
                "-exif:all",  "-xmp", "-Composite:all", outFile, 
                "-overwrite_original"]
@@ -338,8 +349,11 @@ def proc_imgs_comp(i, warp_matrices, bndFolders, panel_irradiance, rf, warp_md):
     _writeim(rgb, bndFolders[0], imtags[0], im)
     del rgb    
     _writeim(RRENir, bndFolders[1], imtags[1], im)
-    del RRENir, im, i
-    
+    del RRENir#, 
+#    _writeim(cir, bndFolders[2], imtags[2], im)
+#    del cir
+#    _writeim(grRE, bndFolders[3], imtags[3], im)    
+#    del grRE, im, i
          
 # for ref
 #[proc_imgs(imCap, warp_matrices, reflFolder) for imCap in imgset]
@@ -349,7 +363,7 @@ def proc_stack(i, warp_matrices, panel_irradiance, warp_md):
         #i.plot_undistorted_reflectance(panel_irradiance)  
     
     
-    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices, rf, warp_md)
+    cropped_dimensions, edges = imageutils.find_crop_bounds(i, warp_matrices)
     
     im_aligned = imageutils.aligned_capture(i, warp_matrices,
                                             cropped_dimensions,
@@ -370,13 +384,13 @@ def proc_stack(i, warp_matrices, panel_irradiance, warp_md):
     filename = os.path.join(reflFolder, nm+'.tif') #blue,green,red,nir,redEdge
     #
     
-    outRaster = driver.Create(filename, cols, rows, 5, gdal.GDT_Byte)
+    outRaster = driver.Create(filename, cols, rows, 5, gdal.gdal.GDT_UInt16)
     normalize = False
     
    #  Output a 'stack' in the same band order as RedEdge/Alutm
       
     
-    outRaster = driver.Create(filename, cols, rows, 5, gdal.GDT_Byte)
+    outRaster = driver.Create(filename, cols, rows, 5, gdal.gdal.GDT_UInt16)
     normalize = False
     
 #     Output a 'stack' in the same band order as RedEdge/Alutm
@@ -421,7 +435,7 @@ if args.stack != None:
 
     print("Producing pairs of 3-band composites muti core")
     #prep the dir
-    bndNames = ['RGB', 'RRENir']
+    bndNames = ['RGB', 'RRENir', 'GRNir', 'GRRe']
     bndFolders = [os.path.join(reflFolder, b) for b in bndNames]
     
     for k in bndFolders:
@@ -454,6 +468,4 @@ else:
              bndFolders,
              panel_irradiance) for imCap in imgset.captures)
     
-    
-
     
