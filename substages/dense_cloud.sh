@@ -14,7 +14,7 @@
 while getopts ":e:a:m:u:z:d:n:r:o:h:" o; do
   case ${o} in
     h) 
-      echo "Process dense cloud."
+      echo "Process dense cloud using either PIMs or Malt."
       echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -z 4 -r 0.02"
       echo "-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "-a Algorithm     : type of algo eg BigMac, MicMac, Forest, Statue etc"

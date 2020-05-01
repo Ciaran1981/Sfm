@@ -28,7 +28,7 @@
 while getopts ":e:u:s:r:z:e:x:g:b:w:p:t:h" opt; do  
   case ${opt} in
     h)
-      echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
+      echo "Run the grid - workflow for drone acquisition at nadir (and pseudo nadir) angles)."
       echo "gridproc.sh -e JPG -u '30 +north' -x 6 -w 2 -p 4 -b 4"
       echo " -e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo " -u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"

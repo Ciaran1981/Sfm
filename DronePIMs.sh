@@ -31,7 +31,7 @@
 while getopts ":e:a:m:c:x:y:u:s:p:z:e:d:g:p:z:t:w:h" opt; do
   case $opt in
     h)  
-      echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
+      echo "Run the PIMs workflow for drone acquisition at nadir (and pseudo nadir) angles)."
       echo "usage: DronePIMs.sh -e JPG -a MicMac -u 30 +north -r 0.1"
       echo "	-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-a Algorithm     : type of algo eg BigMac, MicMac, Forest, Statue etc"
