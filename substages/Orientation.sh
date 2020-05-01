@@ -70,6 +70,10 @@ shift $((OPTIND-1))
 # mm3d SetExif .*JPG F35=20 F=3.6 Cam=DJI
 #exiftool *.JPG | grep "Focal Length"
 # magick mogrify -resize 50%
+# iphone se6
+#mm3d SetExif F35=29 F=4.2 mm 
+#exiftool -TagsFromFile fromImage.jpg toImage.jpg
+
 
 #create UTM file (after deleting any existing one)
 rm SysUTM.xml

@@ -55,6 +55,14 @@ done
 
 
 
+# bramor
+#mm3d SetExif ."*{EXTENSION}" F35=45 F=30 Cam=ILCE-6000  
+# # A PHANTOM 4
+# mm3d SetExif .*JPG F35=20 F=3.6 Cam=DJI
+#exiftool *.JPG | grep "Focal Length"
+# magick mogrify -resize 50%
+# iphone se6
+#mm3d SetExif F35=29 F=4.2 mm Cam=Iphone_SE 
 # If the camera positions are all over the shop its better to use the ALL option
 if [  -n "$match" ]; then
     echo "Matching type specified"

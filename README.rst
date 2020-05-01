@@ -3,11 +3,8 @@
 Structure from Motion workflows
 ============
 
-A series of shell and python scripts for Structure from motion processing
+A series of shell and python scripts for Structure from motion processing using the MicMac library. 
 
-For a more compact and likely easier to use version - please see my pycmac library here:
-
-https://github.com/Ciaran1981/pycmac
 
 **The scripts**
 
@@ -35,16 +32,6 @@ https://github.com/Ciaran1981/pycmac
 
 .. code-block:: bash
     . ~/.bashrc
-
-**QGIS plugin**
-
-To enable use of MicMac and scripts for those who fear the command line...
-
-This is just a front-end for the native MicMac QT menus at present. The scaled versions that utilise the script functionality are not done as yet, but will be added in due course. 
-
-NOT FINISHED!!! Please wait until I upload to the repo.....
-
-(Unles you wish to manually paste it into your plugin folder and alter the mm3d variable to your own micmac bin path)
 
 
 Dependencies

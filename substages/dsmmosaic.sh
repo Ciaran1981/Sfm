@@ -15,7 +15,7 @@ OUT=DSMmosaic.tif
 while getopts "f:u:mt:o:h" opt; do  
   case $opt in
     h)
-      echo "Run the workflow for drone acquisition at nadir (and pseudo nadir) angles)."
+      echo "Mosiac dsms."
       echo "dsmmosaic.sh -f $PWD -u '30 +north' -mt ossimFeatherMosaic -o outmosaic.tif"
       echo "	-f FOLDER     : MicMac working directory."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
