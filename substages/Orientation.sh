@@ -11,14 +11,14 @@
 
 
 
-while getopts ":e:u:i:c:m:t:s:sz:h:" o; do  
+while getopts ":e:u:i:c:m:t:s:h:" o; do  
   case ${o} in
     h)
       echo "Carry out feature extraction and orientation of images"
       echo "Usage: Orientation.sh -e JPG -u -c Fraser 30 +north -s sub.csv " 
       echo "	-e {EXTENSION}     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
-      echo "	-s SIZE         : resize of imagery eg - 2000"
+      echo "	-i SIZE         : resize of imagery eg - 2000"
       echo "	-c CALIB        : Camera calibration model - e.g. RadialBasic, Fraser etc"
       echo "	-m MASK        : Whether to manually mask the sparse cloud (longer processing!)"
       echo "    -t CSV        : text file usually csv with mm3d formatting"
@@ -40,17 +40,14 @@ while getopts ":e:u:i:c:m:t:s:sz:h:" o; do
       CALIB=${OPTARG}
       ;;
  	m)
-      MASK=${OPTARG}
+      MASK=false
       ;;            
     t)
       CSV=${OPTARG}
       ;; 
     s)
       SUB=${OPTARG}
-      ;;
-    sz)
-      SUB=${SIZE}
-      ;;                    
+      ;;           
     \?)
       echo "Orientation.sh: Invalid option: -${OPTARG}" >&1
       exit 1
@@ -63,6 +60,44 @@ while getopts ":e:u:i:c:m:t:s:sz:h:" o; do
 done
 
 shift $((OPTIND-1))
+
+selection=
+until [  "$selection" = "1" ]; do
+    echo "
+    CHECK (carefully) PARAMETERS
+	-e : image extenstion/file type $EXTENSION
+	-u : UTM Zone of area of interest $UTM
+	-i : resize of imagery $SIZE
+	-c : Camera calibration model $CALIB
+	-m : Whether to manually mask the sparse cloud $MASK
+	-t : gps text file usually csv with mm3d formatting $CSV
+	-s : a subset gps csv for pre-calibration of orientation $SUB
+
+    echo 
+    CHOOSE BETWEEN
+    1 - Continue with these parameters
+    0 - Exit program
+    2 - Help
+"
+    echo -n "Enter selection: "
+    read selection
+    echo ""
+    case $selection in
+        1 ) echo "Let's process now" ; continue ;;
+        0 ) exit ;;
+    	2 ) echo "
+		For help use : dense_cloud.sh -h
+	   " >&1
+	   exit 1 ;;
+        * ) echo "
+		Only 0 or 1 are valid choices
+		For help use : dense_cloud.sh -h
+		" >&1
+		exit 1 ;;
+    esac
+done
+
+
 
 # bramor
 #mm3d SetExif ."*{EXTENSION}" F35=45 F=30 Cam=ILCE-6000  
@@ -136,7 +171,7 @@ fi
 mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary 
 
 # This is worth doing to get rid of spurious points on fringes and below the assumed plain
-if [ -n "${MASK}" ]; then
+if [ "${MASK}" = true ]; then
     echo "masking initial orientation"
     mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini WithCam=0 Out=NoCams.ply
     mm3d SaisieMasqQT NoCams.ply
