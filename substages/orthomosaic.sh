@@ -9,16 +9,16 @@
 
 
  
-while getopts "f:u:mb:pb:mt:o:h" opt; do  
+while getopts "f:u:m:p:t:o:h" opt; do  
   case $opt in
     h)
       echo "Run an ossim-based ortho-mosaic on micmac derived imagery"
-      echo "orthomosaic.sh -f $PWD -u '30 +north' -mt ossimFeatherMosaic -o outmosaic.tif"
+      echo "orthomosaic.sh -f $PWD -u '30 +north' -t ossimFeatherMosaic -o outmosaic.tif"
       echo "	-f FOLDER     : MicMac working directory or Malt/PIMs ortho dir."
       echo "	-u UTMZONE    : UTM Zone of area of interest"
-      echo "    -mb MBATCH    : whether to us maltbatch (bool) "
-      echo "    -pb PBATCH    : whether to us pimsbatch (bool)"      
-      echo "    -mt MTYPE     : OSSIM mosaicing type e.g. ossimBlendMosaic ossimMaxMosaic ossimImageMosaic ossimClosestToCenterCombiner ossimBandMergeSource ossimFeatherMosaic" 
+      echo "    -m MBATCH    : whether to us maltbatch (bool) "
+      echo "    -p PBATCH    : whether to us pimsbatch (bool)"      
+      echo "    -t MTYPE     : OSSIM mosaicing type e.g. ossimBlendMosaic ossimMaxMosaic ossimImageMosaic ossimClosestToCenterCombiner ossimBandMergeSource ossimFeatherMosaic" 
       echo "	-o OUT        : Output mosaic e.g. mosaic.tif"      
       echo "	-h	          : displays this message and exits."
       
@@ -32,13 +32,13 @@ while getopts "f:u:mb:pb:mt:o:h" opt; do
       UTM=$OPTARG
       utm_set=true
       ;;
-	mb)
+	m)
       MBATCH=$OPTARG
       ;;   
-	pb)
+	p)
       PBATCH=$OPTARG
       ;;   
-	mt)
+	t)
       MTYPE=$OPTARG
       ;;                        
 	o)
@@ -53,6 +53,43 @@ while getopts "f:u:mb:pb:mt:o:h" opt; do
       exit 1
       ;;
   esac
+done
+
+shift $((OPTIND-1))
+
+selection=
+until [  "$selection" = "1" ]; do
+    echo "
+    CHECK (carefully) PARAMETERS
+    -f : MicMac working directory or Malt/PIMs ortho dir $FOLDER
+    -u : UTM Zone of area of interest. $UTM
+    -m : whether to us maltbatch (bool) $MBATCH
+    -p : whether to us pimsbatch (bool) $PBATCH
+    -t : OSSIM mosaicing type  $MTYPE
+    -o : Output mosaic $OUT
+
+    echo 
+    CHOOSE BETWEEN
+    1 - Continue with these parameters
+    0 - Exit program
+    2 - Help
+"
+    echo -n "Enter selection: "
+    read selection
+    echo ""
+    case $selection in
+        1 ) echo "Let's process now" ; continue ;;
+        0 ) exit ;;
+    	2 ) echo "
+		For help use : dense_cloud.sh -h
+	   " >&1
+	   exit 1 ;;
+        * ) echo "
+		Only 0 or 1 are valid choices
+		For help use : dense_cloud.sh -h
+		" >&1
+		exit 1 ;;
+    esac
 done
 
 if [ -n "${MBATCH}" ]; then
@@ -103,5 +140,5 @@ else
      
     # Max seems best
     echo "creating final mosaic using $MTYPE"
-    ossim-orthoigen --combiner-type "${PBATCH}"  $FOLDER/*Ort_*tif $FOLDER/$OUT
+    ossim-orthoigen --combiner-type $MTYPE  $FOLDER/*Ort_*tif $FOLDER/$OUT
 fi    
