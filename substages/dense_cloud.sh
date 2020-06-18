@@ -76,7 +76,7 @@ shift $((OPTIND-1))
 selection=
 until [  "$selection" = "1" ]; do
     echo "
-    CHECK (carefully) PARAMETERS
+    CHECK PARAMETERS (carefully!) 
     -e : image extenstion/file type $EXTENSION
     -a : type of algo $Algorithm
     -m : mode $MODE
@@ -87,6 +87,11 @@ until [  "$selection" = "1" ]; do
     -n : Number of cores to use - $CORE
     -r : zreg term - context dependent $zreg    
     -o : do ortho -True or False  $orth
+  
+    If you choose to run, a gui will appear and you will be required to 
+    draw a mask round the point cloud to delimit the processing.
+    Press F9 to begin drawing the polyline and space bar to confirm the selection.
+    Ctrl-S to save the selection the close the GUI. 
 
     echo 
     CHOOSE BETWEEN
@@ -98,7 +103,7 @@ until [  "$selection" = "1" ]; do
     read selection
     echo ""
     case $selection in
-        1 ) echo "Let's process now" ; continue ;;
+        1 ) echo "Let's process now " ; continue ;;
         0 ) exit ;;
     	2 ) echo "
 		For help use : dense_cloud.sh -h
@@ -116,9 +121,12 @@ done
 
 mkdir OUTPUT
 
+mm3d SaisieMasqQT AperiCloud_Ground_UTM.ply
+read -rsp $'Press any key to continue...\n' -n1 key
+
 if [[ "$MODE" = "PIMs" ]]; then
     echo "Using PIMs Algorithm"
-    mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg  
+    mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg Masq3D=AperiCloud_Ground_UTM.ply.xml  
     
     
     if  [ "$orth" = true ]; then

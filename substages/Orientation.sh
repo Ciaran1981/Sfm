@@ -108,7 +108,7 @@ done
 # iphone se6
 #mm3d SetExif F35=29 F=4.2 mm 
 #exiftool -TagsFromFile fromImage.jpg toImage.jpg
-
+# mm3d SetExif ."*{EXTENSION}" F35=25 F=4.5
 
 #create UTM file (after deleting any existing one)
 rm SysUTM.xml
@@ -161,7 +161,9 @@ if [  -n "${SUB}" ]; then
     echo "using calibration subset"
     calib_subset.py -folder $PWD -algo ${CALIB}  -csv ${SUB} -ext .${EXTENSION} 
 else
-    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary | tee ${CALIB}RelBundle.txt
+    mm3d Martini .*${EXTENSION}
+
+    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary inOri=Martini | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
 fi    
 
