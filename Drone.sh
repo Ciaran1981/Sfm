@@ -92,7 +92,7 @@ fi
 #Making OUTPUT folder
 mkdir OUTPUT
 #PointCloud from Ortho+DEM, with offset substracted to the coordinates to solve the 32bit precision issue
-mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply Offs=[${X_OFF},${Y_OFF},0]
+mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply 64B=1
  
 cd MEC-Malt
 finalDEMs=($(ls Z_Num*_DeZoom*_STD-MALT.tif))

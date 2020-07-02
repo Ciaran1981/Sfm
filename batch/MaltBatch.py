@@ -11,7 +11,7 @@ Created on Tue May 29 16:20:58 2018
 
 https://github.com/Ciaran1981/Sfm
 
-This scripts tiles large datsets for micmac and processes in parallel or sequnce depending 
+This scripts tiles large datsets for micmac and processes in parallel or sequence depending 
 
 This uses Malt which appear to be better for orthophoto generation
 

@@ -11,23 +11,7 @@
 # Important NOTE - MicMac CPU based is FAR quicker than using the GPU,
 #  as it's memory management limits GPU processing to small chunks
  
-# add default values
-#EXTENSION=JPG
-#X_OFF=0;
-#Y_OFF=0;
-#utm_set=false
-#resol_set=false
-#ZoomF=2  
-#DEQ=1
-#gpu=0
-#Algorithm=Forest  
-#zreg=0.01
-#size=none 
-#prc=3,3
-#CSV=0
-#match=none
-#EG=0
-#win=2 
+
 while getopts ":e:a:m:c:x:y:u:s:p:z:e:d:g:p:z:t:w:h" opt; do
   case $opt in
     h)  
@@ -213,7 +197,7 @@ else
     #for f in TawnyBatch/**Orthophotomosaic*.tif; do     
     gdal_edit.py -a_srs "+proj=utm +zone=$UTM +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/OrthFinal.tif
 
-    mm3d Nuage2Ply PIMs-TmpBasc/PIMs-Merged.xml Attr=PIMs-ORTHO/Orthophotomosaic.tif Out=pointcloud.ply
+    mm3d Nuage2Ply PIMs-TmpBasc/PIMs-Merged.xml Attr=PIMs-ORTHO/Orthophotomosaic.tif Out=pointcloud.ply, 64B=1
     # Create some image histograms for ossim  
     #
     #find TawnyBatch/**Orthophotomosaic*.tif | parallel "ossim-create-histo -i {}" 
