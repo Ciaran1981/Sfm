@@ -174,10 +174,13 @@ else
     	mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
     
         mm3d Tawny Ortho-MEC-Malt RadiomEgal=$egal DEq=$DEQ
+
+	mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply 64B=1
+
     else
         echo "doing dsm only"
         mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=0 DefCor=0 
-        #mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply 64B=1
+
     fi
     
      
