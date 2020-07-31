@@ -163,7 +163,7 @@ if [  -n "${SUB}" ]; then
 else
     mm3d Martini .*${EXTENSION}
 
-    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary inOri=Martini | tee ${CALIB}RelBundle.txt
+    mm3d Tapas .*${EXTENSION} Out=Arbitrary InCal=Martini | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
 fi    
 
