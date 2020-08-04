@@ -136,7 +136,7 @@ else
     echo "using exif data"
     mm3d XifGps2Txt .*${EXTENSION} 
     #Get the GNSS data out of the images and convert it to a xml orientation folder (Ori-RAWGNSS), also create a good RTL (Local Radial Tangential) system.
-    mm3d XifGps2Xml .*${EXTENSION} RAWGNSS
+    mm3d XifGps2Xml .*${EXTENSION} RAWGNSS_N
     mm3d OriConvert "#F=N X Y Z" GpsCoordinatesFromExif.txt RAWGNSS_N ChSys=DegreeWGS84@RTLFromExif.xml MTD1=1 NameCple=FileImagesNeighbour.xml CalcV=1
 fi 
 
@@ -163,7 +163,7 @@ if [  -n "${SUB}" ]; then
 else
     mm3d Martini .*${EXTENSION}
 
-    mm3d Tapas .*${EXTENSION} Out=Arbitrary InCal=Martini | tee ${CALIB}RelBundle.txt
+    mm3d Tapas ${CALIB} .*${EXTENSION} Out=Arbitrary InCal=Martini | tee ${CALIB}RelBundle.txt
     echo " orientation using whole dataset"
 fi    
 
