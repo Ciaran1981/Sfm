@@ -73,49 +73,49 @@ done
 
 shift $((OPTIND-1))
 
-selection=
-until [  "$selection" = "1" ]; do
-    echo "
-    CHECK PARAMETERS (carefully!) 
-    -e : image extenstion/file type $EXTENSION
-    -a : type of algo $Algorithm
-    -m : mode $MODE
-    -u : UTM Zone of area of interest. $UTM
-    -z : Last step in pyramidal dense correlation $ZoomF
-    -i : radiometic eq $egal
-    -d : Degree of equalisation $DEQ 
-    -n : Number of cores to use - $CORE
-    -r : zreg term - context dependent $zreg    
-    -o : do ortho -True or False  $orth
+#selection=
+#until [  "$selection" = "1" ]; do
+#    echo "
+#    CHECK PARAMETERS (carefully!) 
+#    -e : image extenstion/file type $EXTENSION
+#    -a : type of algo $Algorithm
+#    -m : mode $MODE
+#    -u : UTM Zone of area of interest. $UTM
+#    -z : Last step in pyramidal dense correlation $ZoomF
+#    -i : radiometic eq $egal
+#    -d : Degree of equalisation $DEQ 
+#    -n : Number of cores to use - $CORE
+#    -r : zreg term - context dependent $zreg    
+#    -o : do ortho -True or False  $orth
   
-    If you choose to run, a gui will appear and you will be required to 
+echo "If you choose to run, a gui will appear and you will be required to 
     draw a mask round the point cloud to delimit the processing.
     Press F9 to begin drawing the polyline and space bar to confirm the selection.
-    Ctrl-S to save the selection the close the GUI. 
+    Ctrl-S to save the selection the close the GUI." 
 
-    echo 
-    CHOOSE BETWEEN
-    1 - Continue with these parameters
-    0 - Exit program
-    2 - Help
-"
-    echo -n "Enter selection: "
-    read selection
-    echo ""
-    case $selection in
-        1 ) echo "Let's process now " ; continue ;;
-        0 ) exit ;;
-    	2 ) echo "
-		For help use : dense_cloud.sh -h
-	   " >&1
-	   exit 1 ;;
-        * ) echo "
+#    echo 
+#    CHOOSE BETWEEN
+#    1 - Continue with these parameters
+ #   0 - Exit program
+#    2 - Help
+#"
+#    echo -n "Enter selection: "
+ #   read selection
+#    echo ""
+#    case $selection in
+#        1 ) echo "Let's process now " ; continue ;;
+#        0 ) exit ;;
+#    	2 ) echo "
+#		For help use : dense_cloud.sh -h
+#	   " >&1
+#	   exit 1 ;;
+ #       * ) echo "
 		Only 0 or 1 are valid choices
 		For help use : dense_cloud.sh -h
-		" >&1
-		exit 1 ;;
-    esac
-done
+#		" >&1
+#		exit 1 ;;
+#    esac
+#done
 
 
 

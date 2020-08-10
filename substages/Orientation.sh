@@ -61,41 +61,41 @@ done
 
 shift $((OPTIND-1))
 
-selection=
-until [  "$selection" = "1" ]; do
-    echo "
-    CHECK (carefully) PARAMETERS
-	-e : image extenstion/file type $EXTENSION
-	-u : UTM Zone of area of interest $UTM
-	-i : resize of imagery $SIZE
-	-c : Camera calibration model $CALIB
-	-m : Whether to manually mask the sparse cloud $MASK
-	-t : gps text file usually csv with mm3d formatting $CSV
-	-s : a subset gps csv for pre-calibration of orientation $SUB
+#selection=
+#until [  "$selection" = "1" ]; do
+#    echo "
+#    CHECK (carefully) PARAMETERS
+#	-e : image extenstion/file type $EXTENSION
+#	-u : UTM Zone of area of interest $UTM
+#	-i : resize of imagery $SIZE
+#	-c : Camera calibration model $CALIB
+#	-m : Whether to manually mask the sparse cloud $MASK
+#	-t : gps text file usually csv with mm3d formatting $CSV
+#	-s : a subset gps csv for pre-calibration of orientation $SUB
 
-    echo 
-    CHOOSE BETWEEN
-    1 - Continue with these parameters
-    0 - Exit program
-    2 - Help
-"
-    echo -n "Enter selection: "
-    read selection
-    echo ""
-    case $selection in
-        1 ) echo "Let's process now" ; continue ;;
-        0 ) exit ;;
-    	2 ) echo "
-		For help use : dense_cloud.sh -h
-	   " >&1
-	   exit 1 ;;
-        * ) echo "
-		Only 0 or 1 are valid choices
-		For help use : dense_cloud.sh -h
-		" >&1
-		exit 1 ;;
-    esac
-done
+#    echo 
+#    CHOOSE BETWEEN
+#    1 - Continue with these parameters
+#    0 - Exit program
+#    2 - Help
+#"
+#    echo -n "Enter selection: "
+#    read selection
+#    echo ""
+#    case $selection in
+#        1 ) echo "Let's process now" ; continue ;;
+#        0 ) exit ;;
+#    	2 ) echo "
+#		For help use : Orientation.sh -h
+#	   " >&1
+#	   exit 1 ;;
+#        * ) echo "
+#		Only 0 or 1 are valid choices
+#		For help use : dense_cloud.sh -h
+#		" >&1
+#		exit 1 ;;
+#    esac
+#done
 
 
 
