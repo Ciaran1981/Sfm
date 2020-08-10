@@ -173,15 +173,15 @@ fi
 mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary 
 
 # This is worth doing to get rid of spurious points on fringes and below the assumed plain
-if [ "${MASK}" = true ]; then
-    echo "masking initial orientation"
-    mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini WithCam=0 Out=NoCams.ply
-    mm3d SaisieMasqQT NoCams.ply
-    read -rsp $'Once mask is saved press any key to continue...\n' -n1 key
-    mm3d HomolFilterMasq .*${EXTENSION}  OriMasq3D=Ori-Arbitrary/ Masq3D=NoCams.ply
+#if [ "${MASK}" = true ]; then
+#    echo "masking initial orientation"
+#    mm3d AperiCloud .*${EXTENSION} Ori-Arbitrary SH=_mini WithCam=0 Out=NoCams.ply
+#    mm3d SaisieMasqQT NoCams.ply
+#    read -rsp $'Once mask is saved press any key to continue...\n' -n1 key
+#    mm3d HomolFilterMasq .*${EXTENSION}  OriMasq3D=Ori-Arbitrary/ Masq3D=NoCams.ply
     # rename homologous points, the filtered one will be seen as the default
-    mv Homol HomolInit2
-    mv HomolMasqFiltered/ Homol
+#    mv Homol HomolInit2
+#    mv HomolMasqFiltered/ Homol
     #mm3d Tapas ${CALIB} .*${EXTENSION} InOri=Ori-Arbitrary/ Out=ArbitraryM
     #mm3d CenterBascule .*${EXTENSION} ArbitraryM RAWGNSS_N Ground_Init_RTL
 #else

@@ -121,11 +121,12 @@ echo "If you choose to run, a gui will appear and you will be required to
 
 mkdir OUTPUT
 
-mm3d SaisieMasqQT AperiCloud_Ground_UTM.ply
-read -rsp $'Press any key to continue...\n' -n1 key
+#mm3d SaisieMasqQT AperiCloud_Ground_UTM.ply;
+#read -rsp $'Press any key to continue...\n' -n1 key
 
 if [[ "$MODE" = "PIMs" ]]; then
     echo "Using PIMs Algorithm"
+    mm3d SaisieMasqQT AperiCloud_Ground_UTM.ply;
     mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg Masq3D=AperiCloud_Ground_UTM.ply.xml  
     
     
