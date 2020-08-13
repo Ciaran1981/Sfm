@@ -200,4 +200,4 @@ else
 fi
 
 
-mm3d AperiCloud .*${EXTENSION} Ground_UTM 
+mm3d AperiCloud .*${EXTENSION} Ground_UTM WithCam=0

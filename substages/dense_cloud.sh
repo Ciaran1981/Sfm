@@ -126,7 +126,7 @@ mkdir OUTPUT
 if [[ "$MODE" = "PIMs" ]]; then
     echo "Using PIMs Algorithm"
     mm3d SaisieMasqQT AperiCloud_Ground_UTM.ply;
-    mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg Masq3D=AperiCloud_Ground_UTM.ply.xml  
+    mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg Masq3D=AperiCloud_Ground_UTM_polyg3d.xml  
     
     
     if  [ "$orth" = true ]; then
