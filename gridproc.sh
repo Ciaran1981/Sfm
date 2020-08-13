@@ -5,12 +5,12 @@
 # Aberystwyth University
 
 
-# This is a workflow intended for processing very large UAV datasets (eg > 500 images) with MicMac
+# This is a workflow intended for processing very large UAV datasets (eg > 1000s images) with MicMac
 # Upon testing various configurations with the current version of MicMac,
 # some limitations are evident in the use of GPU aided processing which speeds
 # up processing considerably.
 
-# This requires an install of MicMac with  potional GPU support if you wish to use that
+# if you wish to use GPU This requires an install of MicMac with otional GPU support - probably not worth it in truth
   
 
 # A parallel processing tool for large scale Malt processing, uses single threads per tile with optional GPU support
