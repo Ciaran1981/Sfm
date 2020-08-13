@@ -11,16 +11,15 @@
 
 
 
-while getopts ":e:u:i:c:m:t:s:h:" o; do  
+while getopts ":e:u:i:c:t:s:h:" o; do  
   case ${o} in
     h)
       echo "Carry out feature extraction and orientation of images"
-      echo "Usage: Orientation.sh -e JPG -u -c Fraser 30 +north -s sub.csv " 
+      echo "Usage: Orientation.sh -e JPG -u 30 +north -c Fraser -t weeboats.csv  " 
       echo "	-e {EXTENSION}     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "	-i SIZE         : resize of imagery eg - 2000"
       echo "	-c CALIB        : Camera calibration model - e.g. RadialBasic, Fraser etc"
-      echo "	-m MASK        : Whether to manually mask the sparse cloud (longer processing!)"
       echo "    -t CSV        : text file usually csv with mm3d formatting"
       echo "    -s SUB        : a subset  csv for pre-calibration of orientation"      
       echo "	-h	             : displays this message and exits."
@@ -38,10 +37,7 @@ while getopts ":e:u:i:c:m:t:s:h:" o; do
       ;; 
  	c)
       CALIB=${OPTARG}
-      ;;
- 	m)
-      MASK=false
-      ;;            
+      ;;          
     t)
       CSV=${OPTARG}
       ;; 
@@ -91,7 +87,7 @@ shift $((OPTIND-1))
 #	   exit 1 ;;
 #        * ) echo "
 #		Only 0 or 1 are valid choices
-#		For help use : dense_cloud.sh -h
+#		For help use : Orientation.sh -h
 #		" >&1
 #		exit 1 ;;
 #    esac
@@ -128,7 +124,7 @@ echo "</SystemeCoord>                                                           
 # mogrify -resize 30% *.JPG
 #mogrify -resize 2000 *.JPG
 
-if [  -n "${CSV}" ]; then 
+if [  -f "${CSV}" ]; then 
     echo "using csv file ${CSV}"  
     mm3d OriConvert OriTxtInFile ${CSV} RAWGNSS_N ChSys=DegreeWGS84@SysUTM.xml MTD1=1  NameCple=FileImagesNeighbour.xml CalcV=1
     sysCort_make.py -csv ${CSV} -d " "  
@@ -197,8 +193,6 @@ mm3d AperiCloud .*${EXTENSION} Ori-Ground_Init_RTL
 #Change system to final cartographic system  
 if [  -n "${CSV}" ]; then 
     mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_UTM EmGPS=[RAWGNSS_N,1] AllFree=1  | tee ${CALIB}GnssBundle.txt
-    # For reasons unknown this screws it up from csv
-    #mm3d ChgSysCo  .*${EXTENSION} Ground_RTL SysCoRTL.xml@SysUTM.xml Ground_UTM
 else
     mm3d Campari .*${EXTENSION} Ground_Init_RTL Ground_RTL EmGPS=[RAWGNSS_N,1] AllFree=1 | tee ${CALIB}GnssBundle.txt
     mm3d ChgSysCo  .*${EXTENSION} Ground_RTL RTLFromExif.xml@SysUTM.xml Ground_UTM

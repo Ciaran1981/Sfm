@@ -1,5 +1,4 @@
 
-#Created on Fri May  3 17:23:41 2019
 
 #https://github.com/Ciaran1981/Sfm
 
@@ -15,13 +14,13 @@ while getopts ":e:a:m:u:z:i:d:n:r:o:h:" x; do
   case $x in
     h) 
       echo "Process dense cloud using either PIMs or Malt."
-      echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -z 4 -r 0.02"
+      echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -o 1"
       echo "-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "-a Algorithm     : type of algorithm eg Ortho, UrbanMNE for Malt or MicMac, BigMac, QuickMac, Forest, Statue "
       echo "-m MODE          : Either Malt or PIMs - mandatory"
       echo "-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
       echo "-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
-      echo "-i egal           : radiometric eq (See mm3d Tawny)"
+      echo "-i egal          : radiometric eq (See mm3d Tawny)"
       echo "-d DEQ           : Degree of radiometric eq between images during mosaicing (See mm3d Tawny)"
       echo "-n CORE          : Number of cores to use - likely best to stick with physical ones"
       echo "-r zreg          : zreg term - context dependent "     
@@ -174,7 +173,7 @@ else
     	
     	mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
     
-        mm3d Tawny Ortho-MEC-Malt RadiomEgal=$egal DEq=$DEQ
+        mm3d Tawny Ortho-MEC-Malt RadiomEgal=$egal DegRap=$DEQ
 
 	mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply 64B=1
 
