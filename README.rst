@@ -108,19 +108,13 @@ All in one scripts
 
 These process the entire Sfm workflow
 
-**Drone.sh**
+**sfm.sh**
 
-- A script to process photographs with complete exif information outputting orthomosaic, DSM and point cloud (.ply) file
-Typically a DJI phantom or other such platform. This uses Malt for dense matching
+- A script to preform the entire SfM workfow producing DSM, Ortho-mosaic & point cloud
 
-**DronePIMs.sh**
+**gridproc.sh (DEPRECATED)**
 
-- A script like the previous but using the PIMs algorithm
-
-
-**gridproc.sh**
-
-- Process a large dataset (typically 100s-1000s of images) in tiles (this appears to be best for large ortho-mosaics)
+- Process a large dataset (typically 1000s of images+) in tiles 
 
 
 Sub-stage scripts
