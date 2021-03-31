@@ -6,25 +6,21 @@
 
 #Purely for convenience
 
-#Usage dense_cloud.sh -e JPG -a Forest -m PIMs -u 30 +north -z 4 -r 0.02
 
 
 
-while getopts ":e:a:m:u:z:i:d:n:r:o:h:" x; do
+while getopts ":e:a:m:u:o:x:h:" x; do
   case $x in
     h) 
       echo "Process dense cloud using either PIMs or Malt."
-      echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -o 1"
+      echo "Usage: dense_cloud.sh -e JPG -a Forest -m PIMs -x 1"
       echo "-e EXTENSION     : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "-a Algorithm     : type of algorithm eg Ortho, UrbanMNE for Malt or MicMac, BigMac, QuickMac, Forest, Statue "
       echo "-m MODE          : Either Malt or PIMs - mandatory"
       echo "-u UTMZONE       : UTM Zone of area of interest. Takes form 'NN +north(south)'"
-      echo "-z ZoomF         : Last step in pyramidal dense correlation (default=2, can be in [8,4,2,1])"
-      echo "-i egal          : radiometric eq (See mm3d Tawny)"
-      echo "-d DEQ           : Degree of radiometric eq between images during mosaicing (See mm3d Tawny)"
       echo "-n CORE          : Number of cores to use - likely best to stick with physical ones"
-      echo "-r zreg          : zreg term - context dependent "     
-      echo "-o orth          : do ortho -True or False "           
+      echo "-o orth          : do ortho -True or False "  
+      echo "-x dsm        : do DSM -True or False "          
       echo "-h	             : displays this message and exits."
       echo " "
       exit 0 
@@ -41,23 +37,11 @@ while getopts ":e:a:m:u:z:i:d:n:r:o:h:" x; do
 	u)
       UTM=$OPTARG
       ;;
-	z)
-      ZoomF=$OPTARG
-      ;;
-	i)
-      egal=$OPTARG
-      ;;
-	d)
-      DEQ=$OPTARG  
-      ;;
-	n)
-      CORE=$OPTARG  
-      ;;  
-    r)
-      zreg=$OPTARG
-      ;;
     o)
-      orth=true
+      orth=$OPTARG
+      ;;
+    x)
+      dsm=$OPTARG
       ;;
     \?)
       echo "dense_cloud.sh: Invalid option: -$OPTARG" >&1
@@ -87,7 +71,7 @@ shift $((OPTIND-1))
 #    -r : zreg term - context dependent $zreg    
 #    -o : do ortho -True or False  $orth
   
-echo "If you choose to run, a gui will appear and you will be required to 
+echo "If you choose to run PIMs, a gui will appear and you will be required to 
     draw a mask round the point cloud to delimit the processing.
     Press F9 to begin drawing the polyline and space bar to confirm the selection.
     Ctrl-S to save the selection the close the GUI." 
@@ -109,14 +93,14 @@ echo "If you choose to run, a gui will appear and you will be required to
 #	   " >&1
 #	   exit 1 ;;
  #       * ) echo "
-		Only 0 or 1 are valid choices
-		For help use : dense_cloud.sh -h
+#		Only 0 or 1 are valid choices
+#		For help use : dense_cloud.sh -h
 #		" >&1
 #		exit 1 ;;
 #    esac
 #done
 
-
+echo "params chosen are: -e ${EXTENSION} -a ${Algorithm} -m ${MODE} -u ${UTM}" 
 
 mkdir OUTPUT
 
@@ -129,22 +113,18 @@ if [[ "$MODE" = "PIMs" ]]; then
     mm3d PIMs $Algorithm .*$EXTENSION Ground_UTM DefCor=0 ZoomF=$ZoomF ZReg=$zreg Masq3D=AperiCloud_Ground_UTM_polyg3d.xml  
     
     
-    if  [ "$orth" = true ]; then
-        echo "Doing ortho imagery"
-        mm3d PIMs2MNT $Algorithm DoMnt=1 DoOrtho=1
-    
-        mm3d Tawny PIMs-ORTHO/ RadiomEgal=0 Out=Orthophotomosaic.tif
-       
-    
-        mm3d ConvertIm PIMs-ORTHO/Orthophotomosaic.tif Out=OUTPUT/OrthFinal.tif
-        cp PIMs-ORTHO/Orthophotomosaic.tfw OUTPUT/OrthFinal.tfw
-        gdal_edit.py -a_srs "+proj=utm +zone=$UTM +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/OrthFinal.tif
-        mm3d Nuage2Ply PIMs-TmpBasc/PIMs-Merged.xml Attr=PIMs-ORTHO/Orthophotomosaic.tif Out=OUTPUT/pointcloud.ply
-    else
-        echo "Doing DSM only"
-        mm3d PIMs2MNT $Algorithm DoMnt=1 
-        mm3d PIMs2PLY $Algorithm Out=OUTPUT/pointcloud.ply
-    fi
+
+    echo "Doing ortho imagery"
+    mm3d PIMs2MNT $Algorithm DoMnt=1 DoOrtho=1
+
+    mm3d Tawny PIMs-ORTHO/ RadiomEgal=0 Out=Orthophotomosaic.tif
+   
+
+    mm3d ConvertIm PIMs-ORTHO/Orthophotomosaic.tif Out=OUTPUT/OrthFinal.tif
+    cp PIMs-ORTHO/Orthophotomosaic.tfw OUTPUT/OrthFinal.tfw
+    gdal_edit.py -a_srs "+proj=utm +zone=$UTM +ellps=WGS84 +datum=WGS84 +units=m +no_defs" OUTPUT/OrthFinal.tif
+    mm3d Nuage2Ply PIMs-TmpBasc/PIMs-Merged.xml Attr=PIMs-ORTHO/Orthophotomosaic.tif Out=OUTPUT/pointcloud.ply
+
     
     mask_dsm.py -folder $PWD -pims 1
     
@@ -165,25 +145,18 @@ if [[ "$MODE" = "PIMs" ]]; then
 else
     echo "Using Malt Algorithm"
     # Here we find the physical CPU count to avoid thread errors in cmake
-    CpuCount=($(lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l))
+    #CpuCount=($(lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l))
     
-    if  [ "$orth" = true ]; then
+
         
-        echo "doing dsm and ortho"
-    	
-    	mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 #NbProc=$CpuCount
-    
-        mm3d Tawny Ortho-MEC-Malt RadiomEgal=$egal DegRap=$DEQ
+    echo "doing dsm and ortho"
+	
+	mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=1 DefCor=0 DoMEC=$dsm 
+
+        mm3d Tawny Ortho-MEC-Malt RadiomEgal=1
 
 	mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=OUTPUT/PointCloud_OffsetUTM.ply 64B=1
 
-    else
-        echo "doing dsm only"
-        mm3d Malt $Algorithm ".*.$EXTENSION" Ground_UTM UseGpu=0 EZA=1 DoOrtho=0 DefCor=0 
-
-    fi
-    
-     
 
  
     cd MEC-Malt

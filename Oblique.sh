@@ -12,7 +12,7 @@
 # add default values
 
 
-while getopts "e:a:m:d:z:h" opt; do
+while getopts "e:a:m:i:d:z:h" opt; do
   case $opt in
     h)
       echo "Run workflow for point cloud from culture 3d algo."
@@ -20,6 +20,7 @@ while getopts "e:a:m:d:z:h" opt; do
       echo "	-e EXTENSION   : image file type (JPG, jpg, TIF, png..., default=JPG)."
       echo "	-a Algorithm   : type of algo eg BigMac, MicMac, Forest, Statue etc."
       echo "	-m match       : matching type - eg Line All etc" 
+      echo "	-i SIZE         : resize of imagery eg - 2000"
       echo "	-csv CSV       : Whether to use a csv file."
       echo "	-u UTM         : UTM zone."
       echo "	-z ZOOM        : Zoom Level (default=2)"
@@ -30,11 +31,14 @@ while getopts "e:a:m:d:z:h" opt; do
 	e)
       EXTENSION=$OPTARG
       ;;
-    a)
+    	a)
       Algorithm=$OPTARG
       ;; 
-    m)
+    	m)
       match=$OPTARG 
+      ;; 
+ 	i)
+      SIZE=${OPTARG}
       ;;        
 	z)
       ZOOM=$OPTARG
@@ -64,11 +68,19 @@ done
 # iphone se6
 #mm3d SetExif F35=29 F=4.2 mm Cam=Iphone_SE 
 # If the camera positions are all over the shop its better to use the ALL option
+
+if [  -n "${SIZE}" ]; then
+    echo "resizing to ${SIZE} for tie point detection"
+    # mogrify -path Sharp -sharpen 0x3  *.JPG # this sharpens very well worth doing
+    mogrify -resize ${SIZE} *.${EXTENSION}
+fi
+
+
 if [  -n "$match" ]; then
     echo "Matching type specified"
-    mm3d Tapioca $match .*$EXTENSION -1 @SFS
+    mm3d Tapioca $match .*$EXTENSION -2000 @SFS
 else
-    mm3d Tapioca File FileImagesNeighbour.xml -1 @SFS
+    mm3d Tapioca File FileImagesNeighbour.xml -2000 @SFS
 fi
 
 
@@ -94,10 +106,10 @@ mm3d AperiCloud .*$EXTENSION Arbitrary SH=_mini Out=withcams.ply
 
 mm3d SaisieMasqQT Arbitrary.ply
 read -rsp $'Press any key to continue...\n' -n1 key
-mm3d C3DC $Algorithm .*$EXTENSION Arbitrary ZoomF=$ZOOM Masq3D=Arbitrary_polyg3d.xml  Out=Dense.ply
+mm3d C3DC $Algorithm .*$EXTENSION Arbitrary ZoomF=$ZOOM Masq3D=Arbitrary_polyg3d.xml  Out=Dense.ply 
 mm3d TiPunch Dense.ply Mode=$Algorithm Pattern=.*$EXTENSION
 
 mm3d Tequila .*$EXTENSION Arbitrary Dense_poisson_depth8.ply Filter=1
-
+mm3d Apero2Meshlab .*JPG Ground_UTM UnDist=1
 
 

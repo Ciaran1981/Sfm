@@ -39,7 +39,7 @@ Dependencies
 
 Sfm requires:
 
-- GNU/Linux or Mac OS for full functionality (python scripts are not platform dependent)
+- GNU/Linux or Mac OS 
 
 - Python 3
 
@@ -59,16 +59,9 @@ See MicMac install instructions here:
 
 https://micmac.ensg.eu/index.php/Install
 
-If you have a lot of CPU cores, it is almost always better not to bother with GPU aided processing on MicMac in its current state as with lots of jobs/images it will overload the GPU memory.
 
-The only case in which I have found GPU processing to be any use is with my MaltBatch.py script - but you have to manage the no of CPU cores and watch image size/numbers.
 
-If you have relatively few CPU cores, then GPU accerallation is probably more meritful.  
-
-- I have found it is best to install MicMac wthout the GPU as my main install and add it to the path 
-
-- Then I install a separate micmac with GPU support and add it as a variable in shell scripts or the absoulute path when needed
-
+For ref only - I don't recommend using GPU-aided processing with MicMac as it appears to be incomplete. 
 With reference to GPU supported compilation specifically, the following may help:
 
 - Replace the GpGpu.cmake file with the one supplied here as I have added the later Pascal 6.1 architecture
@@ -96,8 +89,6 @@ Install OSSIM via tha ubuntu GIS or equivalent repo
 - Ensure the OSSIM preferences file is on you path, otherwise it will not recognise different projections
 
 - see here https://trac.osgeo.org/ossim/wiki/ossimPreferenceFile
-
-
 
 
 Contents

@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/MicMac_SFM" >
-        <file>icon.png</file>
-    </qresource>
-</RCC>
