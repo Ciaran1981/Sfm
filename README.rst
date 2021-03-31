@@ -125,48 +125,10 @@ All are internal to the complete workflows.
 
 - Processes dense cloud using either the PIMs or Malt-based algorithms, ortho-mosaic, point-cloud and georefs everything
 
-**MaltBatch.py**
-
-- This processes data in tiles/chunks using the Malt algorithm, where GPU support is optional
-
-- It is internal to gridproc
-
-**PimsBatch.py**
-
-- This processes data in tiles/chunks using the PIMs algorithm
-
-- this script is an internal option in DronePIMs.sh
-
 **orthomosaic.sh**
 
 - Orthomosaic the output of any of the above including the batch scripts
 
-**MntBatch.py**
-
-- This processes data in tiles/chunks using the PIMs2MNT algorithm
-
-With a big dataset - I have found the Ortho generation fills up the HD with 1000s of images.
-Hence, this tiles the ortho generation, assuming you have already globbaly processed the data with PIMs algorithm, and potentially the DSM with PIMs2MNT (without the ortho option).
-
-**MSpec.py**
-
-- This calculates surface reflectance and aligns the offset band imagery for the MicaSense RedEdge and is to be used prior to the usual processing
-
-- Outputs can be either single-band or stacked depending on preference
-
-
-**MStack.py**
-
-- This uses functionality borrowed from my lib geospatial_learn to stack the 3-band results of processing Micasense red-edge imagery. 
-- As MicMac only supports 3-band images, the most efficient solution I currently have is to dense match RGB and RReNir sperately then merge results (more efficient solution to follow!)
-
-
-**MicMac-LocalChantierDescripteur.xml**
-- This is a local descriptor of the camera in the C-Astral Bramor - alter the params for your own camera
-
-The folder ContrastEnhanceChant includes parameters to high pass imagery internally prior to key points (SIFT)
-
-It does not permanently alter the images - but this is possible (look up MicMac docs)
 
 Use
 ~~~~~~~~~~~~~~~~~
@@ -175,7 +137,7 @@ type -h to get help on each script e.g. :
 
 .. code-block:: bash
 
-   Drone.sh -help
+   sfm.sh -help
 
 
 
@@ -183,4 +145,4 @@ Thanks
 ~~~~~~~~~~~~~~~~~
 
 
-Thanks to developers and contributors at MicMac and it's forum, particularly L.Girod whose work inspired the basis of the shell scripts and pymicmac from which the tiling function was derived
+Thanks to developers and contributors at MicMac and it's forum, particularly L.Girod whose work inspired the basis of the shell scripts
