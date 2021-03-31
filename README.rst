@@ -101,12 +101,6 @@ These process the entire Sfm workflow
 
 **sfm.sh**
 
-- A script to preform the entire SfM workfow producing DSM, Ortho-mosaic & point cloud
-
-**gridproc.sh (DEPRECATED)**
-
-- Process a large dataset (typically 1000s of images+) in tiles 
-
 
 Sub-stage scripts
 ~~~~~~~~~~~~~~~~~
